@@ -177,15 +177,16 @@
     f.appendChild(el("p", { html: "Gõ <b>họ tên đầy đủ, có dấu</b> và <b>lớp</b> đúng như trong sổ điểm. " +
       "Tên này in lên chứng chỉ — gõ sai thì mã xác nhận không khớp." }));
     var iTen = el("input", { class: "o", id: "ten", autocomplete: "name", placeholder: "Ví dụ: Nguyễn Minh Anh" });
-    var iLop = el("input", { class: "o", id: "lop", placeholder: "Ví dụ: " + ((B.ds_lop || [])[0] || "10A1"), list: "ds-lop" });
-    var dl = el("datalist", { id: "ds-lop" });
-    (B.ds_lop || []).forEach(function (l) { dl.appendChild(el("option", { value: l })); });
-    iTen.value = TT.ten || ""; iLop.value = TT.lop || "";
+    var iLop = el("select", { class: "o", id: "lop" });
+    iLop.appendChild(el("option", { value: "", text: "Chọn lớp của em" }));
+    (B.ds_lop || []).forEach(function (l) { iLop.appendChild(el("option", { value: l, text: l })); });
+    iTen.value = TT.ten || "";
+    iLop.value = (B.ds_lop || []).includes(TT.lop) ? TT.lop : "";
     var tb = el("span", { class: "thong-bao xau" });
     var nut = el("button", { class: "nut", text: TT.qua ? "Học tiếp" : "Bắt đầu học", onclick: function () {
       var ten = iTen.value.replace(/\s+/g, " ").trim(), lop = iLop.value.replace(/\s+/g, "").toUpperCase();
       if (ten.split(" ").length < 2) { tb.textContent = "Con gõ đủ họ và tên nhé."; return; }
-      if (!/^\d{1,2}[A-Z]\d{0,2}$/.test(lop)) { tb.textContent = "Lớp viết dạng " + ((B.ds_lop || [])[0] || "10A1") + "."; return; }
+      if (!(B.ds_lop || []).includes(lop)) { tb.textContent = "Em chọn lớp trong danh sách nhé."; return; }
       if (TT.dat && TT.ten && khongDau(TT.ten) !== khongDau(ten) &&
           !confirm("Đổi tên sẽ làm chứng chỉ cũ không còn khớp mã. Vẫn đổi?")) return;
       TT.ten = ten; TT.lop = lop; ghi();
@@ -199,7 +200,7 @@
       if (TT.qua >= B.chang.length) moCuoi(); else moChang(TT.qua);
     } });
     f.appendChild(el("label", { class: "o", for: "ten", text: "Họ và tên" })); f.appendChild(iTen);
-    f.appendChild(el("label", { class: "o", for: "lop", text: "Lớp" })); f.appendChild(iLop); f.appendChild(dl);
+    f.appendChild(el("label", { class: "o", for: "lop", text: "Lớp" })); f.appendChild(iLop);
     f.appendChild(el("div", { class: "hang-nut" }, [nut, tb]));
     main.appendChild(f);
     var cb = canhBaoLuu(); if (cb) main.appendChild(cb);
@@ -801,9 +802,9 @@
     var ma = maXacNhan(B.bai, TT.ten, TT.lop);
     var F = "Be Vietnam Pro, 'Segoe UI', sans-serif";
     function ve(logo) {
-      var cs = getComputedStyle(document.documentElement), cv = function (k, d) { return (cs.getPropertyValue(k) || "").trim() || d; };
-    var M_DAM = cv("--xanh", "#0F172A"), M_PHU = cv("--chu-phu", "#475569"), M_VANG = cv("--vang", "#D97706"),
-      M_NHAT = cv("--xanh-nhat", "#DBEAFE"), M_TEAL = cv("--teal", "#0D9488");
+      var cs = getComputedStyle(document.documentElement), mauCss = function (k, d) { return (cs.getPropertyValue(k) || "").trim() || d; };
+    var M_DAM = mauCss("--xanh", "#0F172A"), M_PHU = mauCss("--chu-phu", "#475569"), M_VANG = mauCss("--vang", "#D97706"),
+      M_NHAT = mauCss("--xanh-nhat", "#DBEAFE"), M_TEAL = mauCss("--teal", "#0D9488");
     g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, W, H);
       g.fillStyle = M_DAM; g.fillRect(0, 0, W, 150);
       g.strokeStyle = M_VANG; g.lineWidth = 6; g.strokeRect(40, 190, W - 80, H - 230);

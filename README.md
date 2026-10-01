@@ -3,6 +3,8 @@
 Trang tĩnh dành cho **học sinh lớp 8**. Mỗi bài có thế giới đi cảnh 3D và trang đọc cùng nội dung.
 Học sinh qua từng chặng, dừng để trao đổi và ghi bài, rồi mới làm chặng tiếp theo. Checkpoint cuối
 đạt 8/10 câu thì tải chứng chỉ PNG để nộp lên Canvas.
+Khi bắt đầu, học sinh chọn lớp từ danh sách cố định **8A1–8A10**; không gõ lớp tự do. Sau khi đạt
+checkpoint cuối, ảnh chứng chỉ và nút **Tải chứng chỉ (PNG)** hiện ngay; khi mở lại bài, nút vẫn có.
 
 ## Cấu trúc
 
@@ -44,6 +46,7 @@ Mở `http://localhost:8766/bai04/quest.html`.
 - Đáp án chỉ lưu dạng băm (cyrb53); mã chứng chỉ tính từ bài + họ tên + lớp. Web tĩnh nên người cố tình đọc mã nguồn vẫn dò được — đây là đánh giá quá trình, điểm chính thức ở quiz Canvas.
 - Game tải Three.js từ jsDelivr và video từ YouTube; cần mạng. Khi không chạy được 3D, mở trang dạng đọc.
 - Sửa nội dung: sửa `build_web.py` của bài rồi chạy lại; sửa chủ đề game trong `_Chung/build_quest.py` rồi chạy lại. Không sửa tay `data.js` hoặc `quest.html`.
+- Lỗi chứng chỉ đã sửa ngày 02/10/2026: biến lấy màu CSS không được trùng tên với canvas vẽ chứng chỉ trong `assets/app.js`. Đã thử Bài 2 đạt 10/10: ảnh PNG 1600 px và liên kết tải có tên tệp đúng.
 - Hình Scratch nằm trong `assets/scratch/`, được tạo từ thư viện `scratchblocks@3.7.1`. Nếu đổi ví dụ, dựng lại hình theo tên khối Scratch thật, kiểm tra màu và hình dạng khối, rồi cập nhật hình trên cả web và slide. Không thay bằng ô chữ giả khối Scratch.
 - Mã dựng slide và hình Scratch của đợt cập nhật nằm trong `.codex-pptx-build/` để AI agent sau có thể tái tạo. Khi chỉnh tiếp, tạo bản nháp riêng bằng `update_teaching_flow.mjs`, rồi dùng `merge_preserve.py` ghép slide mới vào file gốc. Không lấy bản nháp làm slide dạy vì công cụ xuất toàn bộ PPTX làm mất hiệu ứng ClassPoint. Đã kiểm tra PPTX cuối bằng bộ đọc PowerPoint, kiểm tra cấu trúc gói và bố cục đều không có lỗi; số slide có hiệu ứng và `customXml` bằng bản gốc. Chưa kiểm tra thao tác ClassPoint trực tiếp trong PowerPoint khi dạy.
 - Giữ nguyên ví dụ C++ đã chạy thật bằng g++ và quy tắc bài tập OnlineGDB; video chỉ giúp hiểu khái niệm, không thay ví dụ code của bài.

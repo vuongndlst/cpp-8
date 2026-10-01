@@ -204,11 +204,11 @@ ul.ds li { margin: 3px 0; }
 .thong-bao.tot { color: var(--xanh); }
 .thong-bao.xau { color: var(--do); }
 label.o { display: block; font-weight: 600; margin: 12px 0 4px; }
-input.o {
+input.o, select.o {
   font: inherit; width: 100%; max-width: 420px; padding: 10px 12px;
   border: 1.5px solid var(--vien); border-radius: 10px; background: #fff;
 }
-input.o:focus { outline: none; border-color: var(--xanh-chinh); }
+input.o:focus, select.o:focus { outline: none; border-color: var(--xanh-chinh); }
 
 .ban-do { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 14px 0; }
 .ban-do div { background: var(--xanh-rat-nhat); border: 1px solid var(--vien); border-radius: 10px; padding: 10px 12px; font-size: 15px; }
