@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiểm tra mã chứng chỉ · C++ 8</title>
+<link rel="icon" href="assets/logo_lsts.png">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/chu_de.css">
+<style>
+  textarea { font: 15px Consolas, monospace; width: 100%; min-height: 180px; padding: 10px;
+    border: 1.5px solid var(--vien); border-radius: 10px; }
+  select.o { font: inherit; padding: 8px 10px; border: 1.5px solid var(--vien); border-radius: 10px; }
+  td.ok { color: var(--xanh); font-weight: 700; }
+  td.ko { color: var(--do); font-weight: 700; }
+</style>
+</head>
+<body>
+<header class="dau"><div class="dau-trong">
+  <img src="assets/logo_lsts_trang.png" alt="Logo LSTS">
+  <div><div class="ten-khoa">Dành cho giáo viên</div><div class="ten-bai">Kiểm tra mã chứng chỉ</div></div>
+</div></header>
+<main>
+  <section class="the">
+    <h2>Đối chiếu mã trên chứng chỉ học sinh nộp</h2>
+    <p>Mã 6 ký tự được tính từ <b>bài + họ tên + lớp</b>. Học sinh gõ tên khác (thiếu dấu, sai chính tả)
+      thì mã vẫn khớp nếu chỉ khác dấu và hoa thường; khác chữ thì không khớp.</p>
+    <label class="o" for="bai">Bài</label>
+    <select class="o" id="bai"></select>
+    <label class="o" for="ds">Mỗi dòng một học sinh: <code>Họ tên ; Lớp ; Mã</code> (dấu ; hoặc Tab — dán thẳng từ bảng tính được)</label>
+    <textarea id="ds" placeholder="Nguyễn Minh Anh ; 10A1 ; 9C3ED7"></textarea>
+    <div class="hang-nut"><button class="nut" id="nut">Kiểm tra</button><span class="thong-bao" id="tk"></span></div>
+    <div class="bang-wrap"><table class="bang" id="kq"></table></div>
+  </section>
+</main>
+<script src="assets/khoa.js"></script>
+<script>
+(function () {
+  function cyrb53(str, seed) {
+    seed = seed || 0;
+    var h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+    for (var i = 0, ch; i < str.length; i++) {
+      ch = str.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+    h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+    h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+  }
+  function khongDau(s) {
+    return String(s).normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+  function ma(bai, ten, lop) {
+    var h = cyrb53(["LSTS-CPP8-CC", bai, khongDau(ten), khongDau(lop).replace(/ /g, "")].join("|"));
+    return ("000000" + (h % 16777216).toString(16).toUpperCase()).slice(-6);
+  }
+  var sel = document.getElementById("bai");
+  (window.KHOA || []).forEach(function (b) {
+    var o = document.createElement("option"); o.value = b.bai; o.textContent = b.nhan + " — " + b.tieu_de; sel.appendChild(o);
+  });
+  document.getElementById("nut").onclick = function () {
+    var bai = sel.value, kq = document.getElementById("kq"), dung = 0, tong = 0;
+    kq.innerHTML = "<tr><th>Họ tên</th><th>Lớp</th><th>Mã nộp</th><th>Mã đúng</th><th>Kết quả</th></tr>";
+    document.getElementById("ds").value.split(/\n/).forEach(function (d) {
+      var p = d.split(/;|\t/).map(function (x) { return x.trim(); });
+      if (p.length < 3 || !p[0]) return;
+      tong++;
+      var m = ma(bai, p[0], p[1]), ok = m === p[2].toUpperCase();
+      if (ok) dung++;
+      var tr = document.createElement("tr");
+      [p[0], p[1], p[2].toUpperCase(), m].forEach(function (x) { var td = document.createElement("td"); td.textContent = x; tr.appendChild(td); });
+      var td = document.createElement("td"); td.className = ok ? "ok" : "ko"; td.textContent = ok ? "✓ khớp" : "✗ không khớp"; tr.appendChild(td);
+      kq.appendChild(tr);
+    });
+    document.getElementById("tk").textContent = "Khớp " + dung + "/" + tong + " học sinh.";
+  };
+})();
+</script>
+</body>
+</html>

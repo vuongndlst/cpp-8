@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lập trình C++ · Khối 8</title>
+<link rel="icon" href="assets/logo_lsts.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/chu_de.css">
+<style>
+  .luoi-bai { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .luoi-bai a { display: block; text-decoration: none; color: inherit; background: #fff; border: 1px solid var(--vien);
+    border-radius: 12px; padding: 14px 16px; box-shadow: var(--bong); }
+  .luoi-bai a:hover { border-color: var(--xanh-tuoi); }
+  .luoi-bai .so { font-size: 13px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: .05em; }
+  .luoi-bai .ten { font-size: 18px; font-weight: 700; color: var(--xanh); }
+  .luoi-bai .tt { font-size: 13.5px; color: var(--chu-phu); }
+</style>
+</head>
+<body>
+<header class="dau"><div class="dau-trong">
+  <img src="assets/logo_lsts_trang.png" alt="Logo LSTS">
+  <div><div class="ten-khoa">Trường THCS và THPT Đinh Thiện Lý</div>
+       <div class="ten-bai">Lập trình C++ · Khối 8</div></div>
+</div></header>
+<main>
+  <section class="the">
+    <h1>Các bài học trên web</h1>
+    <p>Chọn một bài để vào thế giới 3D. Mỗi trạm là một chặng ngắn: đoán trước, thử trên web,
+      trả lời câu hỏi nhanh rồi dừng để trao đổi và ghi bài. Qua hết các trạm, con làm
+      <b>checkpoint cuối bài</b>; đạt 8/10 câu thì tải chứng chỉ và nộp lên Canvas.</p>
+    <p>Tiến độ được lưu ngay trên trình duyệt con đang dùng — đổi máy thì phải học lại từ đầu, nên
+      nhớ dùng cùng một máy trong một buổi học.</p>
+  </section>
+  <div class="luoi-bai" id="ds"></div>
+</main>
+<footer>Hình ảnh và video từ nguồn ngoài được nhúng trực tiếp từ trang gốc, ghi nguồn ngay dưới hình,
+  chỉ dùng cho mục đích học tập. · <a href="kiem-tra.html">Trang kiểm tra mã chứng chỉ (giáo viên)</a></footer>
+<script src="assets/khoa.js"></script>
+<script>
+  (function () {
+    var ds = document.getElementById("ds");
+    (window.KHOA || []).forEach(function (b) {
+      var tt = "";
+      try {
+        var t = JSON.parse(localStorage.getItem("cpp8_" + b.ma) || "{}");
+        tt = t.dat ? "✓ Đã có chứng chỉ" : (t.qua ? "Đang học — đã qua " + t.qua + " chặng" : "Chưa bắt đầu");
+      } catch (e) { tt = ""; }
+      var a = document.createElement("a");
+      a.href = b.ma + "/quest.html";
+      a.innerHTML = '<div class="so">🎮 ' + b.nhan + " · " + b.phan + '</div><div class="ten">' + b.tieu_de +
+        '</div><div class="tt">' + tt + "</div>";
+      ds.appendChild(a);
+    });
+  })();
+</script>
+</body>
+</html>
