@@ -143,53 +143,51 @@
   }
 
   // ------------------------------------------------------------ màn bắt đầu
+  var LOI_DAN = {
+    bai01: "Thử viết một chỉ dẫn thật rõ để máy in đúng điều con muốn.",
+    bai02: "Chia 17 viên kẹo cho 5 bạn: máy sẽ tính thương và số dư thế nào?",
+    bai03: "Một cổng chỉ mở khi đủ điều kiện. Con sẽ viết điều kiện đó bằng C++.",
+    bai04: "Thay vì viết cùng một lệnh nhiều lần, con sẽ cho máy lặp lại.",
+    bai05: "Con sẽ gom các lệnh thành hàm để dùng lại khi cần.",
+    bai06: "Ôn năm mảnh ghép C++ qua các trạm ngắn trước giờ kiểm tra."
+  };
   function moDau() {
     changDang = null;
     capNhatDau();
     main.innerHTML = "";
-    var t = el("section", { class: "the" });
+    var t = el("section", { class: "the mo-dau-hero" });
     t.appendChild(el("span", { class: "nhan", text: B.nhan + " · " + B.thoi_gian }));
     t.appendChild(el("h1", { text: B.tieu_de }));
     t.appendChild(el("div", { class: "cau-lon", text: B.cau_hoi }));
-    (B.gioi_thieu || []).forEach(function (p) { t.appendChild(el("p", { html: p })); });
-    if (B.muc_tieu && B.muc_tieu.length) {
-      t.appendChild(el("h3", { text: "Học xong bài này, con có thể" }));
-      t.appendChild(el("ul", { class: "ds" }, B.muc_tieu.map(function (m) { return el("li", { html: m }); })));
-    }
-    var bd = el("div", { class: "ban-do" });
-    B.chang.forEach(function (c, i) {
-      bd.appendChild(el("div", { class: i < TT.qua ? "xong" : "" }, [el("b", { text: (i < TT.qua ? "✓ " : "") + "Chặng " + (i + 1) + " · " + c.phut + " phút" }), c.ten]));
-    });
-    bd.appendChild(el("div", {}, [el("b", { text: "Checkpoint cuối" }),
-      B.cuoi.so_cau + " câu · đạt " + B.cuoi.dat + "/" + B.cuoi.so_cau + " nhận chứng chỉ"]));
-    t.appendChild(el("h3", { text: "Lộ trình" }));
-    t.appendChild(bd);
-    t.appendChild(el("p", { html: "Cuối mỗi chặng có vài câu hỏi nhanh — trả lời đúng hết mới mở chặng sau. " +
-      "Sai thì đọc gợi ý rồi sửa, <b>không bị trừ điểm</b>. Tiến độ được lưu tự động trên trình duyệt này." }));
-    if (!NHUNG) t.appendChild(el("p", { class: "loi-game" }, [
-      el("a", { href: "quest.html", text: "🎮 Vào thế giới 3D của bài này →" }),
-      document.createTextNode(" Mỗi trạm là một chặng; sau checkpoint dừng để cả lớp trao đổi.")
-    ]));
+    t.appendChild(el("p", { class: "loi-dan-ngan", text: LOI_DAN[B.ma] }));
     main.appendChild(t);
 
-    var f = el("section", { class: "the" });
-    f.appendChild(el("h2", { text: "Con là ai?" }));
-    f.appendChild(el("p", { html: "Gõ <b>họ tên đầy đủ, có dấu</b> và <b>lớp</b> đúng như trong sổ điểm. " +
-      "Tên này in lên chứng chỉ — gõ sai thì mã xác nhận không khớp." }));
-    var iTen = el("input", { class: "o", id: "ten", autocomplete: "name", placeholder: "Ví dụ: Nguyễn Minh Anh" });
-    var iLop = el("select", { class: "o", id: "lop" });
-    iLop.appendChild(el("option", { value: "", text: "Chọn lớp của em" }));
-    (B.ds_lop || []).forEach(function (l) { iLop.appendChild(el("option", { value: l, text: l })); });
+    var f = el("form", { class: "the mo-dau-form", novalidate: "" });
+    f.appendChild(el("span", { class: "nhan", text: "Bước 1 · Thông tin học sinh" }));
+    f.appendChild(el("h2", { text: TT.ten ? "Kiểm tra thông tin rồi học tiếp" : "Nhập thông tin để bắt đầu" }));
+    f.appendChild(el("p", { class: "goi-y-form", text: "Dùng họ tên có dấu và lớp của con. Thông tin này sẽ in trên chứng chỉ." }));
+    var iTen = el("input", { class: "o", id: "ten", name: "ten", autocomplete: "name", placeholder: "Ví dụ: Nguyễn Minh Anh", required: "", "aria-describedby": "loi-ten" });
+    var iLop = el("select", { class: "o", id: "lop", name: "lop", required: "", "aria-describedby": "loi-lop" });
+    iLop.appendChild(el("option", { value: "", text: "Chọn lớp của con" }));
+    var dsLop = B.ds_lop || [];
+    dsLop.forEach(function (l) { iLop.appendChild(el("option", { value: l, text: l })); });
     iTen.value = TT.ten || "";
-    iLop.value = (B.ds_lop || []).includes(TT.lop) ? TT.lop : "";
-    var tb = el("span", { class: "thong-bao xau" });
-    var nut = el("button", { class: "nut", text: TT.qua ? "Học tiếp" : "Bắt đầu học", onclick: function () {
-      var ten = iTen.value.replace(/\s+/g, " ").trim(), lop = iLop.value.replace(/\s+/g, "").toUpperCase();
-      if (ten.split(" ").length < 2) { tb.textContent = "Con gõ đủ họ và tên nhé."; return; }
-      if (!(B.ds_lop || []).includes(lop)) { tb.textContent = "Em chọn lớp trong danh sách nhé."; return; }
+    iLop.value = dsLop.indexOf(TT.lop) >= 0 ? TT.lop : "";
+    var loiTen = el("small", { class: "loi-truong", id: "loi-ten", "aria-live": "polite" });
+    var loiLop = el("small", { class: "loi-truong", id: "loi-lop", "aria-live": "polite" });
+    iTen.addEventListener("input", function () { loiTen.textContent = ""; iTen.removeAttribute("aria-invalid"); });
+    iLop.addEventListener("change", function () { loiLop.textContent = ""; iLop.removeAttribute("aria-invalid"); });
+    var nut = el("button", { class: "nut", type: "submit", text: TT.qua >= B.chang.length ? "Vào checkpoint cuối →" :
+      TT.qua ? "Học tiếp chặng " + (TT.qua + 1) + " →" : "Vào chặng 1 →" });
+    var choi = !NHUNG ? el("button", { class: "nut phu", type: "button", text: "Vào đảo 3D →" }) : null;
+    function batDau(choi3D) {
+      var ten = iTen.value.replace(/\s+/g, " ").trim(), lop = iLop.value;
+      if (ten.split(" ").length < 2) { loiTen.textContent = "Nhập cả họ và tên của con."; iTen.setAttribute("aria-invalid", "true"); iTen.focus(); return; }
+      if (dsLop.indexOf(lop) < 0) { loiLop.textContent = "Chọn một lớp trong danh sách."; iLop.setAttribute("aria-invalid", "true"); iLop.focus(); return; }
       if (TT.dat && TT.ten && khongDau(TT.ten) !== khongDau(ten) &&
           !confirm("Đổi tên sẽ làm chứng chỉ cũ không còn khớp mã. Vẫn đổi?")) return;
       TT.ten = ten; TT.lop = lop; ghi();
+      if (choi3D) { location.href = "quest.html"; return; }
       if (NHUNG) {
         var cq0 = Q.get("chang");
         if (cq0 !== null) moChang(Math.min(+cq0 || 0, TT.qua));
@@ -198,11 +196,30 @@
         return;
       }
       if (TT.qua >= B.chang.length) moCuoi(); else moChang(TT.qua);
-    } });
-    f.appendChild(el("label", { class: "o", for: "ten", text: "Họ và tên" })); f.appendChild(iTen);
-    f.appendChild(el("label", { class: "o", for: "lop", text: "Lớp" })); f.appendChild(iLop);
-    f.appendChild(el("div", { class: "hang-nut" }, [nut, tb]));
+    }
+    f.addEventListener("submit", function (ev) { ev.preventDefault(); batDau(false); });
+    if (choi) choi.addEventListener("click", function () { batDau(true); });
+    f.appendChild(el("label", { class: "o", for: "ten", text: "Họ và tên" })); f.appendChild(iTen); f.appendChild(loiTen);
+    f.appendChild(el("label", { class: "o", for: "lop", text: "Lớp" })); f.appendChild(iLop); f.appendChild(loiLop);
+    f.appendChild(el("div", { class: "hang-nut" }, [nut, choi]));
+    if (!NHUNG) f.appendChild(el("p", { class: "goi-y-form", text: "Đảo 3D và trang đọc dùng chung tiến độ học." }));
     main.appendChild(f);
+    if (!NHUNG) {
+      var them = el("details", { class: "the mo-dau-them" });
+      them.appendChild(el("summary", { text: "Xem mục tiêu và lộ trình bài học" }));
+      (B.gioi_thieu || []).forEach(function (p) { them.appendChild(el("p", { html: p })); });
+      if (B.muc_tieu && B.muc_tieu.length) {
+        them.appendChild(el("h3", { text: "Sau bài học, con có thể" }));
+        them.appendChild(el("ul", { class: "ds" }, B.muc_tieu.map(function (m) { return el("li", { html: m }); })));
+      }
+      var bd = el("div", { class: "ban-do" });
+      B.chang.forEach(function (c, i) {
+        bd.appendChild(el("div", { class: i < TT.qua ? "xong" : "" }, [el("b", { text: (i < TT.qua ? "✓ " : "") + "Chặng " + (i + 1) + " · " + c.phut + " phút" }), c.ten]));
+      });
+      bd.appendChild(el("div", {}, [el("b", { text: "Checkpoint cuối" }), B.cuoi.so_cau + " câu · đạt " + B.cuoi.dat + "/" + B.cuoi.so_cau + " nhận chứng chỉ"]));
+      them.appendChild(bd);
+      main.appendChild(them);
+    }
     var cb = canhBaoLuu(); if (cb) main.appendChild(cb);
   }
 

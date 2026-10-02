@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/home.css?v=cpp8-home-3">
+<link rel="stylesheet" href="assets/home.css?v=cpp8-home-ux-2">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js"}}</script>
 </head>
 <body>
@@ -28,9 +28,14 @@
       <h1 id="hero-title">Chọn một đảo.<br><em>Bắt đầu khám phá.</em></h1>
       <p class="hero-lead">Mỗi đảo là một bài học. Con đi qua từng trạm, thử viết mã, trả lời câu hỏi rồi dừng để trao đổi và ghi bài cùng lớp.</p>
       <div class="hero-actions">
-        <a class="primary" href="#quan-dao">Khám phá sáu đảo <span aria-hidden="true">↓</span></a>
-        <a class="secondary" href="#cach-hoc">Xem cách học</a>
+        <a class="primary" href="#chon-bai">Chọn bài học <span aria-hidden="true">↓</span></a>
+        <a class="secondary" href="#quan-dao">Khám phá sáu đảo</a>
       </div>
+      <form class="quick-jump" id="chon-bai" novalidate>
+        <label for="lesson-picker">Biết số bài rồi? Vào thẳng bài học</label>
+        <div class="quick-jump-row"><select id="lesson-picker" required aria-describedby="quick-jump-error"><option value="">Chọn bài hôm nay</option></select><button type="submit">Mở bài →</button></div>
+        <p id="quick-jump-error" class="quick-jump-error" aria-live="polite"></p>
+      </form>
     </div>
     <div class="hero-mark" aria-hidden="true"><span>{</span><b>C++</b><span>}</span><small>LEVEL 08</small></div>
   </section>
@@ -38,7 +43,7 @@
   <section class="archipelago" id="quan-dao" aria-labelledby="islands-title">
     <div class="section-head">
       <div><p class="eyebrow">BẢN ĐỒ QUẦN ĐẢO</p><h2 id="islands-title">Sáu thế giới, sáu cách khám phá</h2></div>
-      <p>Chạm vào tên đảo để vào game 3D, hoặc chọn bài ở danh sách bên dưới.</p>
+      <p>Muốn khám phá theo chủ đề? Chọn đảo trên bản đồ hoặc trong danh sách.</p>
     </div>
     <div class="sea-scene" id="sea-scene">
       <canvas id="island-canvas" aria-label="Sáu đảo 3D đại diện cho sáu bài học C++"></canvas>
@@ -70,6 +75,15 @@
 <script>
 (function () {
   var ds=document.getElementById("ds");
+  var picker=document.getElementById("lesson-picker"), pickError=document.getElementById("quick-jump-error");
+  (window.KHOA||[]).forEach(function (b) { var o=document.createElement("option"); o.value=b.ma; o.textContent=b.nhan+" — "+b.tieu_de; picker.appendChild(o); });
+  picker.addEventListener("change",function () { pickError.textContent=""; picker.removeAttribute("aria-invalid"); });
+  document.getElementById("chon-bai").addEventListener("submit",function (ev) {
+    ev.preventDefault();
+    var b=(window.KHOA||[]).find(function (item) { return item.ma===picker.value; });
+    if (!b) { pickError.textContent="Chọn bài trong danh sách trước khi mở."; picker.setAttribute("aria-invalid","true"); picker.focus(); return; }
+    location.href=b.ma+"/index.html";
+  });
   var themes=[
     ["Rừng lệnh","Bắt đầu với câu lệnh, nhập và xuất","#64D4A0"],
     ["Xưởng toán","Dùng phép toán trong chương trình","#59DFDE"],

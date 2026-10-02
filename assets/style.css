@@ -349,3 +349,17 @@ pre.man-hinh::before { content: "Màn hình"; display: block; font-size: 11px; c
   font-family: "Be Vietnam Pro", sans-serif; }
 pre.loi { border-left-color: var(--do); color: #FCA5A5; }
 pre.loi::before { content: "Máy báo lỗi"; }
+
+/* Màn bắt đầu gọn, trường nhập có thông báo lỗi ngay bên dưới. */
+.mo-dau-hero{margin-bottom:12px}.mo-dau-hero .cau-lon{margin-bottom:10px}
+.loi-dan-ngan{font-size:17px;line-height:1.55;margin:8px 0 0}
+.mo-dau-form{border-top:4px solid var(--xanh-chinh)}.mo-dau-form h2{margin-bottom:4px}
+.goi-y-form{color:var(--chu-phu);font-size:14.5px;margin:7px 0 10px}
+.mo-dau-form .hang-nut{margin-top:10px}.mo-dau-form .nut{min-height:44px}
+.loi-truong{display:block;min-height:1.15em;color:var(--do);font-weight:600}
+input.o:focus,select.o:focus{outline:3px solid rgba(37,99,235,.2);border-color:var(--xanh-chinh)}
+input.o[aria-invalid="true"],select.o[aria-invalid="true"]{border-color:var(--do)}
+.mo-dau-them summary{cursor:pointer;font-weight:700;color:var(--xanh)}
+.mo-dau-them summary:focus-visible{outline:3px solid var(--xanh-chinh);outline-offset:3px;border-radius:4px}
+.mo-dau-them[open] summary{margin-bottom:14px}
+@media(max-width:640px){.dau .ten-khoa{display:none}.dau .ten-bai{font-size:14px}.dau .nguoi{display:block;max-width:112px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}}

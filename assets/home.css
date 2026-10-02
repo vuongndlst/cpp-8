@@ -104,3 +104,10 @@ footer a { color:#C7EAF0; }
   .how ol { grid-template-columns:1fr; }
 }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*:before,*:after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+
+.quick-jump{scroll-margin-top:24px;margin-top:25px;padding:16px 18px;border:1px solid rgba(94,224,230,.35);border-radius:16px;background:rgba(94,224,230,.08);max-width:620px}
+.quick-jump label{display:block;font-size:14px;font-weight:800;margin-bottom:10px;color:#EBFCFF}
+.quick-jump-row{display:flex;gap:10px}.quick-jump select{font:inherit;flex:1;min-width:0;min-height:46px;padding:9px 12px;border-radius:10px;border:1px solid #A9CBD9;background:#F6FCFF;color:#12253A}.quick-jump select[aria-invalid="true"]{border-color:#FF9F9F}
+.quick-jump button{font:inherit;font-weight:800;min-height:46px;padding:10px 17px;border:0;border-radius:10px;background:var(--gold);color:#12253A;cursor:pointer;white-space:nowrap;transition:transform .2s,box-shadow .2s}.quick-jump button:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(249,215,116,.3)}
+.quick-jump-error{min-height:1em;margin:5px 0 0;color:#FFC2C2;font-size:12px}
+@media(max-width:620px){.quick-jump{padding:15px}.quick-jump-row{flex-direction:column}.quick-jump button{width:100%}}

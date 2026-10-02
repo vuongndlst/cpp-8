@@ -1019,11 +1019,8 @@ manDau.appendChild(h("div", { class: "q-the" }, [
   h("div", { class: "q-nho", text: "ĐẢO " + String(B.bai).padStart(2, "0") + " · " + B.khoa + " · " + B.nhan }),
   h("h1", { text: CFG.ten_dao }),
   h("p", { class: "q-cau", text: B.cau_hoi }),
-  h("ul", {}, [
-    h("li", { text: "Mỗi trạm là một chặng của bài học (" + N + " trạm). Qua câu hỏi nhanh của trạm thì trạm sau mở khoá." }),
-    h("li", { text: "Qua đủ " + N + " trạm, Cổng checkpoint cuối mở — đạt " + B.cuoi.dat + "/" + B.cuoi.so_cau + " câu nhận chứng chỉ như trang bài học thường." }),
-    h("li", { text: CAM_UNG ? "Kéo ở nửa trái màn hình để đi, chạm vào trạm để tự đi tới." : "Đi bằng WASD hoặc phím mũi tên, nhấn E để vào trạm, kéo chuột để xoay." }),
-    h("li", { text: "Có nhạc nền nhẹ — bấm nút loa ở góc phải để tắt (hoặc phím M)." })]),
+  h("p", { text: "Đi qua " + N + " trạm để thử ý tưởng C++. Sau mỗi trạm, dừng lại giải thích cách làm rồi mới đi tiếp." }),
+  h("p", { class: "q-nho", text: CAM_UNG ? "Kéo để di chuyển hoặc chạm trạm để đi tới." : "Di chuyển: WASD/phím mũi tên · Vào trạm: E · Xoay nhìn: kéo chuột." }),
   h("div", { class: "q-hang" }, [nutVao, h("a", { class: "q-lien-ket", href: CFG.trang_doc, text: "Học ở chế độ đọc" })]),
 ]));
 document.body.appendChild(manDau);
