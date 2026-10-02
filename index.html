@@ -2,60 +2,104 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lập trình C++ · Khối 8</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071827">
+<title>Quần đảo C++ · Khối 8</title>
 <link rel="icon" href="assets/logo_lsts.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
-<link rel="stylesheet" href="assets/chu_de.css">
-<style>
-  .luoi-bai { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-  .luoi-bai a { display: block; text-decoration: none; color: inherit; background: #fff; border: 1px solid var(--vien);
-    border-radius: 12px; padding: 14px 16px; box-shadow: var(--bong); }
-  .luoi-bai a:hover { border-color: var(--xanh-tuoi); }
-  .luoi-bai .so { font-size: 13px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: .05em; }
-  .luoi-bai .ten { font-size: 18px; font-weight: 700; color: var(--xanh); }
-  .luoi-bai .tt { font-size: 13.5px; color: var(--chu-phu); }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/home.css?v=cpp8-home-2">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js"}}</script>
 </head>
 <body>
-<header class="dau"><div class="dau-trong">
-  <img src="assets/logo_lsts_trang.png" alt="Logo LSTS">
-  <div><div class="ten-khoa">Trường THCS và THPT Đinh Thiện Lý</div>
-       <div class="ten-bai">Lập trình C++ · Khối 8</div></div>
-</div></header>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Trang chủ Lập trình C++ khối 8">
+    <img src="assets/logo_lsts_trang.png" alt="Logo LSTS">
+    <span><small>TRƯỜNG THCS &amp; THPT ĐINH THIỆN LÝ</small><strong>Quần đảo C++ <i>·</i> Khối 8</strong></span>
+  </a>
+  <a class="top-link" href="#cach-hoc">Cách học <span aria-hidden="true">↗</span></a>
+</header>
+
 <main>
-  <section class="the">
-    <h1>Các bài học trên web</h1>
-    <p>Chọn một bài để vào thế giới 3D. Mỗi trạm là một chặng ngắn: đoán trước, thử trên web,
-      trả lời câu hỏi nhanh rồi dừng để trao đổi và ghi bài. Qua hết các trạm, con làm
-      <b>checkpoint cuối bài</b>; đạt 8/10 câu thì tải chứng chỉ và nộp lên Canvas.</p>
-    <p>Tiến độ được lưu ngay trên trình duyệt con đang dùng — đổi máy thì phải học lại từ đầu, nên
-      nhớ dùng cùng một máy trong một buổi học.</p>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="pulse"></span> SÁU ĐẢO · MỘT HÀNH TRÌNH C++</p>
+      <h1 id="hero-title">Chọn một đảo.<br><em>Bắt đầu khám phá.</em></h1>
+      <p class="hero-lead">Mỗi đảo là một bài học. Con đi qua từng trạm, thử viết mã, trả lời câu hỏi rồi dừng để trao đổi và ghi bài cùng lớp.</p>
+      <div class="hero-actions">
+        <a class="primary" href="#quan-dao">Khám phá sáu đảo <span aria-hidden="true">↓</span></a>
+        <a class="secondary" href="#cach-hoc">Xem cách học</a>
+      </div>
+    </div>
+    <div class="hero-mark" aria-hidden="true"><span>{</span><b>C++</b><span>}</span><small>LEVEL 08</small></div>
   </section>
-  <div class="luoi-bai" id="ds"></div>
+
+  <section class="archipelago" id="quan-dao" aria-labelledby="islands-title">
+    <div class="section-head">
+      <div><p class="eyebrow">BẢN ĐỒ QUẦN ĐẢO</p><h2 id="islands-title">Sáu thế giới, sáu cách khám phá</h2></div>
+      <p>Chạm vào tên đảo để vào game 3D, hoặc chọn bài ở danh sách bên dưới.</p>
+    </div>
+    <div class="sea-scene" id="sea-scene">
+      <canvas id="island-canvas" aria-label="Sáu đảo 3D đại diện cho sáu bài học C++"></canvas>
+      <div class="island-hotspots" id="island-hotspots"></div>
+      <div class="sea-hint" aria-hidden="true">C++ <span>✦</span> ARCHIPELAGO</div>
+      <div class="sea-fallback" id="sea-fallback" hidden>Không tải được cảnh 3D. Con vẫn chọn bài học ở danh sách bên dưới.</div>
+    </div>
+    <div class="island-list" id="ds" aria-label="Danh sách sáu bài học"></div>
+    <noscript><p>Để xem đảo 3D, hãy bật JavaScript. Con vẫn có thể mở
+      <a href="bai01/index.html">Bài 1</a>, <a href="bai02/index.html">Bài 2</a>,
+      <a href="bai03/index.html">Bài 3</a>, <a href="bai04/index.html">Bài 4</a>,
+      <a href="bai05/index.html">Bài 5</a> và <a href="bai06/index.html">Bài 6</a> dạng đọc.</p></noscript>
+  </section>
+
+  <section class="how" id="cach-hoc" aria-labelledby="how-title">
+    <div><p class="eyebrow">CÁCH HỌC</p><h2 id="how-title">Đi từng trạm, hiểu từng bước</h2></div>
+    <ol>
+      <li><b>1</b><span>Chọn đảo và vào chặng đang mở.</span></li>
+      <li><b>2</b><span>Đoán trước, thử trên web và vượt câu hỏi nhanh.</span></li>
+      <li><b>3</b><span>Dừng lại trao đổi, ghi bài rồi mới đi tiếp.</span></li>
+      <li><b>4</b><span>Qua checkpoint cuối để tải chứng chỉ nộp Canvas.</span></li>
+    </ol>
+    <p class="save-note">Tiến độ lưu trên trình duyệt đang dùng. Hãy dùng cùng một máy trong buổi học.</p>
+  </section>
 </main>
-<footer>Hình ảnh và video từ nguồn ngoài được nhúng trực tiếp từ trang gốc, ghi nguồn ngay dưới hình,
-  chỉ dùng cho mục đích học tập. · <a href="kiem-tra.html">Trang kiểm tra mã chứng chỉ (giáo viên)</a></footer>
+
+<footer>Thiết kế cho học sinh C++ khối 8 · <a href="kiem-tra.html">Kiểm tra mã chứng chỉ (giáo viên)</a></footer>
 <script src="assets/khoa.js"></script>
 <script>
-  (function () {
-    var ds = document.getElementById("ds");
-    (window.KHOA || []).forEach(function (b) {
-      var tt = "";
-      try {
-        var t = JSON.parse(localStorage.getItem("cpp8_" + b.ma) || "{}");
-        tt = t.dat ? "✓ Đã có chứng chỉ" : (t.qua ? "Đang học — đã qua " + t.qua + " chặng" : "Chưa bắt đầu");
-      } catch (e) { tt = ""; }
-      var a = document.createElement("a");
-      a.href = b.ma + "/quest.html";
-      a.innerHTML = '<div class="so">🎮 ' + b.nhan + " · " + b.phan + '</div><div class="ten">' + b.tieu_de +
-        '</div><div class="tt">' + tt + "</div>";
-      ds.appendChild(a);
-    });
-  })();
+(function () {
+  var ds=document.getElementById("ds");
+  var themes=[
+    ["Rừng lệnh","Bắt đầu với câu lệnh, nhập và xuất","#64D4A0"],
+    ["Xưởng toán","Dùng phép toán trong chương trình","#59DFDE"],
+    ["Mê cung điều kiện","Chọn hướng đi với if và else","#C5A2FF"],
+    ["Thành phố vòng lặp","Lặp lại công việc với for và while","#73D6EC"],
+    ["Phòng lab hàm","Tạo lệnh của riêng mình","#E3B3FA"],
+    ["Pháo đài ôn tập","Kết nối kiến thức Bài 1–5","#FBD581"]
+  ];
+  (window.KHOA||[]).forEach(function (b,i) {
+    var progress={};
+    try { progress=JSON.parse(localStorage.getItem("cpp8_"+b.ma)||"{}"); } catch (e) {}
+    var state=progress.dat?"✓ Đã có chứng chỉ":progress.qua?"Đã qua "+progress.qua+" chặng":"Chưa bắt đầu";
+    var a=document.createElement("a"); a.className="lesson-card"; a.href=b.ma+"/quest.html";
+    a.style.setProperty("--accent",themes[i][2]);
+    var top=document.createElement("div"); top.className="card-top";
+    var label=document.createElement("span"); label.textContent="ĐẢO "+String(i+1).padStart(2,"0")+" · "+b.nhan.toUpperCase();
+    var icon=document.createElement("i"); icon.textContent=["{ }","+ −","if","↻","f()","★"][i];
+    top.append(label,icon);
+    var name=document.createElement("h3"); name.textContent=themes[i][0];
+    var sub=document.createElement("p"); sub.className="subtitle"; sub.textContent=themes[i][1];
+    var bottom=document.createElement("div"); bottom.className="card-bottom";
+    var st=document.createElement("span"); st.className="status"; st.textContent=state;
+    var go=document.createElement("span"); go.className="go"; go.textContent="Vào đảo ↗";
+    bottom.append(st,go); a.append(top,name,sub,bottom); ds.appendChild(a);
+  });
+  setTimeout(function () {
+    if (!window.__home3dReady) document.getElementById("sea-fallback").hidden=false;
+  }, 10000);
+})();
 </script>
+<script type="module" src="assets/home3d.js?v=cpp8-home-2"></script>
 </body>
 </html>

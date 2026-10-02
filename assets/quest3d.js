@@ -1,6 +1,6 @@
-/* Game quest 3D — hành trình Hà Giang tới Cà Mau quanh trang bài học.
+/* Game quest 3D — sáu đảo với cảnh riêng quanh trang bài học.
  *
- * Mỗi chặng của bài là một TRẠM trên tuyến đường; tới trạm thì mở đúng chặng của trang bài học trong khung nhúng
+ * Mỗi chặng của bài là một TRẠM trên đảo; tới trạm thì mở đúng chặng của trang bài học trong khung nhúng
  * (index.html?nhung=1&chang=i). Qua checkpoint chặng -> trạm sáng xanh, trạm sau mở khoá. Qua hết -> CỔNG
  * checkpoint cuối mở (index.html?nhung=1&cuoi=1) -> chứng chỉ như trang thường.
  * Tiến độ, đáp án, chứng chỉ: KHÔNG làm lại ở đây — do app.js xử lý, lưu cùng khoá localStorage.
@@ -20,20 +20,6 @@ const TIEN_TO = B.tien_to_luu || "ml1_";
 const LUU = TIEN_TO + B.ma;
 const LUU_Q = TIEN_TO + "quest";
 const N = B.chang.length;
-// Điểm dừng mang tính hành trình học tập, không thay thế tọa độ bản đồ địa lý.
-const DIA_DIEM = {
-  haGiang: { ten: "Hà Giang", lon: 104.98, lat: 22.82, x: -5, z: -18 },
-  haNoi: { ten: "Hà Nội", lon: 105.83, lat: 21.03, x: -7, z: -10 },
-  hue: { ten: "Huế", lon: 107.58, lat: 16.46, x: 0, z: -2 },
-  daNang: { ten: "Đà Nẵng", lon: 108.22, lat: 16.05, x: 3, z: 1 },
-  nhaTrang: { ten: "Nha Trang", lon: 109.19, lat: 12.24, x: 7, z: 8 },
-  saiGon: { ten: "TP. Hồ Chí Minh", lon: 106.70, lat: 10.82, x: 4, z: 14 },
-  caMau: { ten: "Cà Mau", lon: 105.15, lat: 9.18, x: -5, z: 20 },
-};
-const HANH_TRINH = (N === 5
-  ? [DIA_DIEM.haGiang, DIA_DIEM.haNoi, DIA_DIEM.hue, DIA_DIEM.nhaTrang, DIA_DIEM.saiGon]
-  : [DIA_DIEM.haGiang, DIA_DIEM.haNoi, DIA_DIEM.daNang, DIA_DIEM.saiGon]).slice(0, N);
-function toaBanDo(d) { return [50 + (d.lon - 101.2) * 46, 18 + (23.7 - d.lat) * 40]; }
 const IT_CHUYEN_DONG = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const CAM_UNG = matchMedia("(pointer: coarse)").matches;
 const R_DAO = 25;
@@ -88,7 +74,16 @@ renderer.domElement.setAttribute("tabindex", "0");
 renderer.domElement.setAttribute("aria-label", "Thế giới 3D " + CFG.ten_dao + ". Dùng phím mũi tên để đi, E để vào trạm.");
 
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog("#CFEAFF", 70, 190);
+const BAU_TROI = {
+  "rung-lenh": ["#2F80D1", "#A9D8FF", "#DDF1FF"],
+  "xuong-toan": ["#125977", "#8FCBD5", "#E3EBE5"],
+  "me-cung": ["#574897", "#B4A3DA", "#EEE5F5"],
+  "thanh-pho": ["#173C6F", "#8BC5DC", "#DCEEF2"],
+  "phong-lab": ["#3D3C87", "#A8A3D6", "#E4DDF1"],
+  "phao-dai": ["#70624D", "#E6C790", "#FFF0D7"],
+};
+const troiMau = BAU_TROI[CFG.canh] || BAU_TROI["rung-lenh"];
+scene.fog = new THREE.Fog(troiMau[1], 70, 190);
 const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 600);
 
 // ------------------------------------------------------------------ vật liệu, tiện ích
@@ -111,7 +106,7 @@ const FONT = '"Be Vietnam Pro", "Segoe UI", sans-serif';
 // ------------------------------------------------------------------ trời, ánh sáng, mây
 const troi = new THREE.Mesh(new THREE.SphereGeometry(400, 32, 16), new THREE.ShaderMaterial({
   side: THREE.BackSide, depthWrite: false, fog: false,
-  uniforms: { tren: { value: new THREE.Color("#2F80D1") }, giua: { value: new THREE.Color("#A9D8FF") }, duoi: { value: new THREE.Color("#DDF1FF") } },
+  uniforms: { tren: { value: new THREE.Color(troiMau[0]) }, giua: { value: new THREE.Color(troiMau[1]) }, duoi: { value: new THREE.Color(troiMau[2]) } },
   vertexShader: "varying vec3 p; void main(){ p = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }",
   fragmentShader: "uniform vec3 tren; uniform vec3 giua; uniform vec3 duoi; varying vec3 p; void main(){ float y = normalize(p).y;" +
     " vec3 c = y > 0. ? mix(giua, tren, pow(y, .55)) : duoi; gl_FragColor = vec4(c, 1.); }",
@@ -151,18 +146,22 @@ scene.add(bien);
 
 function daoDa() {
   const g = new THREE.Group();
-  const co = new THREE.Mesh(new THREE.CylinderGeometry(R_DAO, R_DAO - 0.6, 1.2, 72), vl(CFG.dat));
+  const matDa = { "rung-lenh": 64, "xuong-toan": 32, "me-cung": 12,
+    "thanh-pho": 48, "phong-lab": 40, "phao-dai": 16 }[CFG.canh] || 64;
+  const co = new THREE.Mesh(new THREE.CylinderGeometry(R_DAO, R_DAO - 0.6, 1.2, matDa), vl(CFG.dat));
   co.position.y = -0.6; co.receiveShadow = true; g.add(co);
-  const cat = new THREE.Mesh(new THREE.CylinderGeometry(R_DAO + 1.6, R_DAO + 2.6, 0.6, 72), vl("#F1D59A"));
+  const mauBo = { "xuong-toan": "#89A9B5", "me-cung": "#BDAAD0", "thanh-pho": "#7BB8C8",
+    "phong-lab": "#B7A9D1", "phao-dai": "#D8BC8C" }[CFG.canh] || "#F1D59A";
+  const cat = new THREE.Mesh(new THREE.CylinderGeometry(R_DAO + 1.6, R_DAO + 2.6, 0.6, matDa), vl(mauBo));
   cat.position.y = -1.0; cat.receiveShadow = true; g.add(cat);
-  const vach_geo = new THREE.CylinderGeometry(R_DAO + 2.4, R_DAO * 0.45, 9, 28, 4);
+  const vach_geo = new THREE.CylinderGeometry(R_DAO + 2.4, R_DAO * 0.45, 9, matDa, 4);
   const p = vach_geo.attributes.position;
   for (let i = 0; i < p.count; i++) {
     if (p.getY(i) > 4.4) continue;
     const k = 0.9 + rnd() * 0.2;
     p.setX(i, p.getX(i) * k); p.setZ(i, p.getZ(i) * k); p.setY(i, p.getY(i) + (rnd() - 0.5) * 0.8);
   }
-  const vach = new THREE.Mesh(vach_geo, vl("#9C7A55"));
+  const vach = new THREE.Mesh(vach_geo, vl(CFG.canh === "phao-dai" ? "#675C51" : CFG.canh === "me-cung" ? "#65546E" : "#9C7A55"));
   vach.position.y = -5.8; g.add(vach);
   // đường vòng nối các trạm + quảng trường
   const duong = new THREE.Mesh(new THREE.RingGeometry(12.6, 15.0, 72), vl(CFG.duong, { roughness: 1 }));
@@ -183,6 +182,13 @@ const VAT_CAN = [];
 function vatCan(x, z, r) { VAT_CAN.push({ x, z, r }); }
 
 // ------------------------------------------------------------------ trạm
+const GOC_TRAM = (() => {
+  const trai = Math.ceil(N / 2), phai = N - trai, ds = [];
+  const chia = (a, b, n) => n === 1 ? [(a + b) / 2] : Array.from({ length: n }, (_, i) => a + (b - a) * i / (n - 1));
+  chia(222, 138, trai).forEach(a => ds.push(a));
+  chia(42, -42, phai).forEach(a => ds.push(a));
+  return ds;
+})();
 const MAU_TT = { khoa: "#94A3B8", mo: CFG.mau, xong: "#22C55E" };
 const TRAM = [];
 
@@ -191,11 +197,8 @@ function nhanTram(i, tt) {
   return veChu(640, 190, (g, w, hh) => {
     hopTron(g, 6, 6, w - 12, hh - 12, 34); g.fillStyle = "rgba(11,21,38,0.86)"; g.fill();
     g.lineWidth = 6; g.strokeStyle = MAU_TT[tt]; g.stroke();
-    g.fillStyle = MAU_TT[tt]; g.textBaseline = "middle";
-    const diaDiem = "CHẶNG " + (i + 1) + " · " + HANH_TRINH[i].ten.toUpperCase();
-    let coChu = 38;
-    do { g.font = "700 " + coChu + "px " + FONT; coChu -= 2; } while (g.measureText(diaDiem).width > w - 72 && coChu >= 26);
-    g.fillText(diaDiem, 36, 58);
+    g.fillStyle = MAU_TT[tt]; g.font = "700 38px " + FONT; g.textBaseline = "middle";
+    g.fillText("CHẶNG " + (i + 1) + (tt === "xong" ? "  ✓ XONG" : tt === "khoa" ? "  · KHOÁ" : "  · ĐANG MỞ"), 36, 58);
     g.fillStyle = "#F8FAFC"; g.font = "700 50px " + FONT;
     let t = c.ten_ngan || c.ten;
     while (g.measureText(t).width > w - 72 && t.length > 4) t = t.slice(0, -2) + "…";
@@ -233,8 +236,7 @@ function robotNho(mau) {
   return g;
 }
 function taoTram(i) {
-  const d = HANH_TRINH[i];
-  const p = new THREE.Vector3(d.x, 0, d.z);
+  const p = viTri(GOC_TRAM[i], 13.8);
   const g = new THREE.Group(); g.position.copy(p); g.lookAt(0, 0, 0);
   const nen = bong(new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.6, 0.5, 6), vl("#CBD5E1")));
   nen.position.y = 0.25; g.add(nen);
@@ -255,25 +257,18 @@ function taoTram(i) {
   cham.position.y = 3; cham.userData.tram = i; g.add(cham);
   scene.add(g);
   vatCan(p.x, p.z, 2.7);
-  return { i, g, vong, tinh_the, nhan, rb, cham, p, tt: "", cho_dung: p.clone().multiplyScalar(0.82) };
+  return { i, g, vong, tinh_the, nhan, rb, cham, p, tt: "", cho_dung: p.clone().multiplyScalar(0.72) };
 }
 for (let i = 0; i < N; i++) TRAM.push(taoTram(i));
-// Vệt sáng dẫn học sinh đi theo thứ tự bắc → nam qua các trạm.
-const duongHanhTrinh = new THREE.CatmullRomCurve3(
-  [...HANH_TRINH, DIA_DIEM.caMau].map(d => new THREE.Vector3(d.x, 0.10, d.z)));
-const vachHanhTrinh = new THREE.Mesh(new THREE.TubeGeometry(duongHanhTrinh, 90, 0.17, 8, false),
-  new THREE.MeshBasicMaterial({ color: CFG.mau_phu, transparent: true, opacity: 0.75 }));
-scene.add(vachHanhTrinh);
-const diemDuong = duongHanhTrinh.getPoints(60);
 
 // ------------------------------------------------------------------ cổng checkpoint cuối
 const CONG = (() => {
-  const g = new THREE.Group(); g.position.set(DIA_DIEM.caMau.x, 0, DIA_DIEM.caMau.z); g.rotation.y = Math.PI;
+  const g = new THREE.Group(); g.position.set(0, 0, -19.5);
   const da = vl("#64748B", { roughness: 0.7 });
   for (const x of [-3.1, 3.1]) {
     const c = bong(new THREE.Mesh(new THREE.BoxGeometry(1.3, 6.4, 1.3), da)); c.position.set(x, 3.2, 0); g.add(c);
     const d = bong(new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.5, 1.7), vl("#475569"))); d.position.set(x, 0.25, 0); g.add(d);
-    vatCan(DIA_DIEM.caMau.x - x, DIA_DIEM.caMau.z, 1.1);
+    vatCan(x, -19.5, 1.1);
   }
   const tren = bong(new THREE.Mesh(new THREE.BoxGeometry(8.2, 1.1, 1.6), vl("#00599C", { roughness: 0.5 })));
   tren.position.y = 6.9; g.add(tren);
@@ -302,8 +297,7 @@ const CONG = (() => {
   const cham = new THREE.Mesh(new THREE.BoxGeometry(8, 8, 3), new THREE.MeshBasicMaterial({ visible: false }));
   cham.position.y = 4; cham.userData.cong = true; g.add(cham);
   scene.add(g);
-  return { g, cong_mat, song, nhan, cham, p: new THREE.Vector3(DIA_DIEM.caMau.x, 0, DIA_DIEM.caMau.z),
-    cho_dung: new THREE.Vector3(DIA_DIEM.caMau.x, 0, DIA_DIEM.caMau.z - 3.8), tt: "" };
+  return { g, cong_mat, song, nhan, cham, p: new THREE.Vector3(0, 0, -19.5), cho_dung: new THREE.Vector3(0, 0, -15.2), tt: "" };
 })();
 function nhanCong(tt) {
   return veChu(760, 180, (g, w, hh) => {
@@ -334,15 +328,17 @@ const TUONG = (() => {
   return quay;
 })();
 (() => {
-  const g = new THREE.Group(); g.position.set(-11, 0, -18); g.rotation.y = Math.PI;
+  const g = new THREE.Group(); g.position.set(3.4, 0, 19); g.rotation.y = -0.35;
   for (const x of [-1.1, 1.1]) { const c = bong(new THREE.Mesh(new THREE.BoxGeometry(0.22, 2.2, 0.22), vl("#8B5A2B"))); c.position.set(x, 1.1, 0); g.add(c); }
   const bang = bong(new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.3, 0.16), vl("#A0703E")));
   bang.position.y = 2.0; g.add(bang);
   const chu = new THREE.Mesh(new THREE.PlaneGeometry(3.0, 1.1), new THREE.MeshBasicMaterial({ transparent: true, toneMapped: false,
     map: veChu(600, 220, (c, w, hh) => { c.fillStyle = "#FFF7E6"; c.textAlign = "center"; c.textBaseline = "middle";
-      c.font = "700 64px " + FONT; c.fillText(CFG.ten_dao, w / 2, 80); c.font = "600 40px " + FONT; c.fillText(B.nhan + " · C++", w / 2, 160); }) }));
+      let coChu = 64;
+      do { c.font = "700 " + coChu + "px " + FONT; coChu -= 2; } while (c.measureText(CFG.ten_dao).width > w - 48 && coChu >= 34);
+      c.fillText(CFG.ten_dao, w / 2, 80); c.font = "600 40px " + FONT; c.fillText(B.nhan + " · C++", w / 2, 160); }) }));
   chu.position.set(0, 2.0, 0.09); g.add(chu);
-  scene.add(g); vatCan(-11, -18, 1.4);
+  scene.add(g); vatCan(3.4, 19, 1.4);
 })();
 
 // ------------------------------------------------------------------ cây, đá (instanced)
@@ -351,16 +347,16 @@ const TUONG = (() => {
   for (let k = 0; k < 400 && vi.length < 70; k++) {
     const a = rnd() * Math.PI * 2, r = 5.5 + rnd() * (R_DAO - 7.5);
     const x = Math.cos(a) * r, z = Math.sin(a) * r;
+    if (r < 11.5) continue; // nhường lõi đảo cho công trình nhận diện riêng của bài
     if (Math.abs(r - 13.8) < 2.4) continue;
     if (Math.abs(x) < 2.8 && (z > 3 || z < -3)) continue;
-    if (diemDuong.some(p => Math.hypot(p.x - x, p.z - z) < 2.6)) continue;
     if (TRAM.some(t => Math.hypot(t.p.x - x, t.p.z - z) < 4.6)) continue;
-    if (Math.hypot(x - DIA_DIEM.caMau.x, z - DIA_DIEM.caMau.z) < 6 || Math.hypot(x + 11, z + 18) < 3) continue;
+    if (Math.hypot(x, z + 19.5) < 6 || Math.hypot(x - 3.4, z - 19) < 3) continue;
     if (vi.some(v => Math.hypot(v[0] - x, v[1] - z) < 2.1)) continue;
     vi.push([x, z, 0.8 + rnd() * 0.7, rnd()]);
   }
   const cay = vi.filter(v => v[3] < 0.78), da = vi.filter(v => v[3] >= 0.78);
-  const thap = CFG.canh === "thap";
+  const thap = ["xuong-toan", "thanh-pho", "phong-lab"].includes(CFG.canh);
   const than = new THREE.InstancedMesh(thap ? new THREE.BoxGeometry(1.1, 2.8, 1.1) : new THREE.CylinderGeometry(0.18, 0.26, 1.2, 6), vl(thap ? "#294668" : "#8B5A2B"), cay.length);
   const la1 = new THREE.InstancedMesh(thap ? new THREE.BoxGeometry(1.15, 0.1, 1.15) : new THREE.ConeGeometry(1.3, 2.2, 6), vl(CFG.la_1, thap ? { emissive: CFG.la_1, emissiveIntensity: 0.6 } : {}), cay.length);
   const la2 = new THREE.InstancedMesh(thap ? new THREE.BoxGeometry(1.15, 0.1, 1.15) : new THREE.ConeGeometry(0.95, 1.7, 6), vl(CFG.la_2, thap ? { emissive: CFG.la_2, emissiveIntensity: 0.6 } : {}), cay.length);
@@ -380,6 +376,106 @@ const TUONG = (() => {
     vatCan(x, z, 0.85 * k);
   });
   for (const im of [than, la1, la2, dg]) { im.castShadow = true; im.receiveShadow = true; scene.add(im); }
+})();
+
+// ------------------------------------------------------------------ công trình riêng của từng đảo
+(() => {
+  const canh = CFG.canh;
+  const them = (geo, mau, x, y, z, opts) => {
+    const o = bong(new THREE.Mesh(geo, vl(mau, opts)));
+    o.position.set(x, y, z); scene.add(o); return o;
+  };
+  const hop = (x, z, w, cao, sau, mau, y = cao / 2, opts) =>
+    them(new THREE.BoxGeometry(w, cao, sau), mau, x, y, z, opts);
+  const den = (x, y, z, r, mau) => them(new THREE.IcosahedronGeometry(r, 1), mau, x, y, z,
+    { emissive: mau, emissiveIntensity: 0.65, roughness: 0.25 });
+
+  if (canh === "rung-lenh") {
+    // Rừng lệnh: bia chỉ dẫn và cổng mã màu lam giữa tán cây.
+    for (const x of [-8, 8]) {
+      hop(x, -6, 1.1, 5.2, 1.1, "#356C58");
+      den(x, 5.7, -6, 0.75, CFG.mau);
+      vatCan(x, -6, 0.9);
+    }
+    hop(0, -8, 5, 0.55, 0.8, "#7DD9C2", 5.4, { emissive: "#2AA89B", emissiveIntensity: 0.4 });
+    for (const [x, z] of [[-7, 6], [7, 6], [-9, -9], [9, -9]]) {
+      const than = them(new THREE.CylinderGeometry(0.28, 0.36, 3.8, 6), "#5C7B48", x, 1.9, z);
+      than.rotation.z = (x > 0 ? 1 : -1) * 0.08;
+      them(new THREE.ConeGeometry(2.1, 4.6, 7), CFG.la_1, x, 5.1, z);
+      vatCan(x, z, 1.1);
+    }
+  } else if (canh === "xuong-toan") {
+    // Xưởng phép toán: bánh răng, ống khói và băng chuyền.
+    for (const [x, z, r] of [[-8, -4, 2.2], [8, -5, 1.7]]) {
+      const gear = them(new THREE.TorusGeometry(r, 0.34, 8, 16), CFG.mau_phu, x, 4.4, z,
+        { metalness: 0.45, roughness: 0.3, emissive: CFG.mau_phu, emissiveIntensity: 0.2 });
+      gear.rotation.y = 0.18;
+      for (let k = 0; k < 4; k++) {
+        const spoke = hop(x, z, r * 1.75, 0.23, 0.3, "#E8F4F2", 4.4);
+        spoke.rotation.z = k * Math.PI / 4;
+      }
+      hop(x, z, 1.1, 3.8, 1.1, "#294668"); vatCan(x, z, 1.2);
+    }
+    hop(0, -8, 5, 2.2, 2.8, "#36566F");
+    for (const x of [-1.5, 1.5]) {
+      them(new THREE.CylinderGeometry(0.45, 0.55, 4, 8), "#40677E", x, 4.2, -8);
+      den(x, 6.4, -8, 0.4, CFG.mau);
+    }
+    vatCan(0, -8, 3.0);
+  } else if (canh === "me-cung") {
+    // Mê cung điều kiện: hai nhánh tường dẫn tới các lựa chọn.
+    const tuong = [[-8, -8, 1, 7], [-8, 7, 1, 6], [8, -8, 1, 7], [8, 7, 1, 6],
+      [-5.5, -8, 5, 1], [5.5, 8, 5, 1], [-5.5, 8, 5, 1], [5.5, -8, 5, 1]];
+    tuong.forEach(([x, z, w, d], i) => {
+      hop(x, z, w, 2.6 + i % 2 * 0.6, d, i % 2 ? "#745A9D" : "#594D83");
+      hop(x, z, w + 0.25, 0.17, d + 0.25, CFG.mau, 2.7 + i % 2 * 0.6,
+        { emissive: CFG.mau, emissiveIntensity: 0.35 });
+    });
+    for (const x of [-5, 5]) den(x, 3.2, 0, 1, CFG.mau_phu);
+  } else if (canh === "thanh-pho") {
+    // Thành phố vòng lặp: nhiều tầng nhà và vòng sáng lặp quanh lõi.
+    for (const [x, z, cao] of [[-9, -6, 7], [9, -7, 9], [-8, 7, 5], [8, 7, 7]]) {
+      hop(x, z, 2.8, cao, 2.8, "#244967");
+      for (let y = 1.6; y < cao; y += 1.7)
+        hop(x, z + 1.46, 2.6, 0.15, 0.08, CFG.mau, y,
+          { emissive: CFG.mau, emissiveIntensity: 0.8 });
+      vatCan(x, z, 1.9);
+    }
+    for (const y of [4.8, 6.6, 8.4]) {
+      const ring = them(new THREE.TorusGeometry(5.2, 0.16, 8, 48), y === 6.6 ? CFG.mau_phu : CFG.mau,
+        0, y, 0, { emissive: CFG.mau, emissiveIntensity: 0.55 });
+      ring.rotation.x = Math.PI / 2;
+    }
+  } else if (canh === "phong-lab") {
+    // Phòng thí nghiệm hàm: hai mô-đun kính và dây sáng kết nối.
+    for (const x of [-8, 8]) {
+      them(new THREE.CylinderGeometry(2.5, 2.7, 0.65, 16), "#48467B", x, 0.33, -4);
+      them(new THREE.SphereGeometry(2.45, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2),
+        "#9BE7F4", x, 0.68, -4, { transparent: true, opacity: 0.38, metalness: 0.2, roughness: 0.1 });
+      den(x, 2.0, -4, 0.95, CFG.mau_phu);
+      vatCan(x, -4, 2.4);
+    }
+    for (const z of [-8, -5, -2, 1, 4]) {
+      hop(0, z, 0.16, 0.06, 2.2, CFG.mau, 0.09, { emissive: CFG.mau, emissiveIntensity: 0.9 });
+    }
+    const orbit = them(new THREE.TorusGeometry(4.4, 0.14, 8, 40), CFG.mau_phu, 0, 5.7, 0,
+      { emissive: CFG.mau_phu, emissiveIntensity: 0.65 });
+    orbit.rotation.x = 0.48;
+  } else if (canh === "phao-dai") {
+    // Pháo đài ôn tập: thành lũy, tháp canh và cờ trên đỉnh.
+    for (const x of [-8, 8]) {
+      const thap = them(new THREE.CylinderGeometry(2.0, 2.2, 7, 8), "#6A675E", x, 3.5, -6);
+      thap.castShadow = true;
+      them(new THREE.ConeGeometry(2.55, 2.4, 8), "#9C5944", x, 8.2, -6);
+      hop(x, -6, 0.12, 2.2, 0.12, "#E4DCCB", 10.2);
+      const co = hop(x + 0.8, -6, 1.6, 0.9, 0.08, CFG.mau_phu, 10.7);
+      co.rotation.z = -0.08;
+      vatCan(x, -6, 2.2);
+    }
+    hop(0, -8.5, 12, 4.1, 1.7, "#777065");
+    for (let x = -5.5; x <= 5.5; x += 2.2) hop(x, -8.5, 1.1, 0.8, 1.9, "#888075", 4.45);
+    vatCan(0, -8.5, 5.5);
+  }
 })();
 
 // ------------------------------------------------------------------ ký hiệu C++ bay lơ lửng
@@ -421,8 +517,8 @@ const BIT = (() => {
   const bong_dat = new THREE.Mesh(new THREE.CircleGeometry(0.7, 24), new THREE.MeshBasicMaterial({ color: "#000", transparent: true, opacity: 0.22, depthWrite: false }));
   bong_dat.rotation.x = -Math.PI / 2; bong_dat.position.y = 0.04;
   scene.add(g); scene.add(bong_dat);
-  g.position.set(-5, 0, -22);
-  g.rotation.y = 0;
+  g.position.set(0, 0, 21);
+  g.rotation.y = Math.PI;
   return { g, than, den, lua, bong_dat, mat: [mat_trai, mat_phai] };
 })();
 
@@ -512,12 +608,10 @@ const tieuDe = h("div", { class: "q-the q-tieu-de" }, [
   h("div", { class: "q-lon", text: B.tieu_de })]);
 const hangKhoa = h("div", { class: "q-khoa-hang", "aria-label": "Tiến độ các trạm" });
 tieuDe.appendChild(hangKhoa);
-const nutBanDo = h("button", { class: "q-nut", text: "🗺 Bản đồ", "aria-label": "Mở bản đồ hành trình Việt Nam",
-  onclick: () => moBanDo(true) });
 const nutAm = h("button", { class: "q-nut", onclick: () => { khoiDongAm(); datAm(!QS.am); } });
 const nutMenu = h("button", { class: "q-nut", "aria-label": "Menu", "aria-expanded": "false", html: ICON.menu + '<span class="q-chu-nut">Menu</span>',
   onclick: (e) => { e.stopPropagation(); moMenu(!menu.classList.contains("hien")); } });
-hud.append(tieuDe, h("div", { class: "q-nut-hang" }, [nutBanDo, nutAm, nutMenu]));
+hud.append(tieuDe, h("div", { class: "q-nut-hang" }, [nutAm, nutMenu]));
 document.body.appendChild(hud);
 const menu = h("div", { class: "q-the q-menu", role: "menu" });
 document.body.appendChild(menu);
@@ -528,78 +622,18 @@ function moMenu(hien) {
   menu.appendChild(h("h4", { text: "Dịch chuyển tới" }));
   TRAM.forEach(t => menu.appendChild(h("button", { text: "Trạm " + (t.i + 1) + " · " + (B.chang[t.i].ten_ngan || B.chang[t.i].ten) + (t.i < qua() ? " ✓" : ""),
     onclick: () => { moMenu(false); dichChuyen(t); }, ...(t.i > qua() ? { disabled: "" } : {}) })));
-  menu.appendChild(h("button", { text: "Cà Mau · checkpoint cuối", onclick: () => { moMenu(false); dichChuyen(CONG); }, ...(qua() < N ? { disabled: "" } : {}) }));
+  menu.appendChild(h("button", { text: "Cổng checkpoint cuối", onclick: () => { moMenu(false); dichChuyen(CONG); }, ...(qua() < N ? { disabled: "" } : {}) }));
   menu.appendChild(h("h4", { text: "Hiển thị" }));
   [["tu_dong", "Tự động"], ["cao", "Đẹp (máy mạnh)"], ["nhe", "Nhẹ (máy yếu)"]].forEach(([k, t]) =>
     menu.appendChild(h("button", { class: QS.chat_luong === k ? "chon" : "", text: (QS.chat_luong === k ? "● " : "○ ") + t,
       onclick: () => { QS.chat_luong = k; luuQS(); apChatLuong(k === "nhe" || (k === "tu_dong" && CHAT.nhe_tu_dong)); moMenu(false); } })));
   menu.appendChild(h("h4", { text: "Khác" }));
-  menu.appendChild(h("button", { text: "Bản đồ Hà Giang → Cà Mau", onclick: () => { moMenu(false); moBanDo(true); } }));
   menu.appendChild(h("a", { href: CFG.trang_doc, text: "Chế độ đọc (trang bài học thường)" }));
   menu.appendChild(h("button", { text: "Cách điều khiển", onclick: () => { moMenu(false); thongBao(CAM_UNG ?
     "Kéo ở nửa trái màn hình để đi · chạm vào trạm để tự đi tới · bấm nút vàng để vào trạm." :
     "WASD hoặc phím mũi tên để đi · E / Enter để vào trạm · kéo chuột để xoay · lăn chuột để gần/xa · M tắt tiếng.", "", 6000); } }));
 }
 document.addEventListener("click", (e) => { if (!menu.contains(e.target) && !nutMenu.contains(e.target)) moMenu(false); });
-
-// ------------------------------------------------------------------ bản đồ hành trình trên nền lược đồ Việt Nam
-const banDo = h("div", { class: "q-ban-do", role: "dialog", "aria-modal": "true", "aria-label": "Bản đồ hành trình Việt Nam", hidden: "" });
-const banDoDong = h("button", { class: "q-nut", text: "Đóng bản đồ", onclick: () => moBanDo(false) });
-const banDoTuyen = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-banDoTuyen.setAttribute("class", "q-ban-do-tuyen");
-banDoTuyen.setAttribute("viewBox", "0 0 900 700");
-banDoTuyen.setAttribute("aria-hidden", "true");
-const banDoDanhSach = h("div", { class: "q-ban-do-danh-sach" });
-const banDoHinh = h("div", { class: "q-ban-do-hinh" }, [
-  h("img", { src: "../assets/vietnam-map.svg", alt: "Lược đồ Việt Nam có Hoàng Sa và Trường Sa" }), banDoTuyen]);
-banDo.appendChild(h("div", { class: "q-the q-ban-do-the" }, [
-  h("div", { class: "q-ban-do-dau" }, [
-    h("div", {}, [h("div", { class: "q-nho", text: "BẢN ĐỒ HÀNH TRÌNH" }), h("h2", { text: "Hà Giang → Cà Mau" })]), banDoDong]),
-  h("p", { text: "Mỗi điểm dừng là một chặng học. Hoàn thành checkpoint để mở điểm tiếp theo." }),
-  h("div", { class: "q-ban-do-noi-dung" }, [banDoHinh, banDoDanhSach]),
-  h("p", { class: "q-ban-do-nguon", html: 'Đường bờ: <a href="https://www.naturalearthdata.com/about/terms-of-use/" target="_blank" rel="noopener">Natural Earth 1:50m</a>. Vị trí nhóm đảo tham khảo từ <a href="https://danang.gov.vn/vi/web/dng/w/ubnd-huyen-hoang-sa-i" target="_blank" rel="noopener">UBND huyện Hoàng Sa</a> và <a href="https://pbgdpl.gov.vn/Pages/chi-tiet-tin.aspx?ItemID=1113&amp;l=Nghiencuutraodoi" target="_blank" rel="noopener">Cổng phổ biến giáo dục pháp luật</a>. Lược đồ minh họa, không thể hiện ranh giới biển.' })]));
-document.body.appendChild(banDo);
-let choiTruocBanDo = false;
-function moBanDo(mo) {
-  if (mo) {
-    choiTruocBanDo = dangChoi; dangChoi = false; PHIM.clear(); CAN.hoat = false;
-    veBanDo(); banDo.hidden = false; banDoDong.focus();
-  } else {
-    banDo.hidden = true;
-    if (choiTruocBanDo) { dangChoi = true; renderer.domElement.focus(); }
-    choiTruocBanDo = false;
-  }
-}
-function veBanDo() {
-  const ds = [...HANH_TRINH, DIA_DIEM.caMau];
-  // Đường nét đứt đi qua các điểm đất liền; các trạm hiển thị tùy số chặng của bài.
-  const venDuong = [DIA_DIEM.haGiang, DIA_DIEM.haNoi,
-    { lon: 105.78, lat: 19.80 }, { lon: 105.69, lat: 18.68 },
-    { lon: 106.61, lat: 17.47 }, DIA_DIEM.hue, DIA_DIEM.daNang,
-    { lon: 109.22, lat: 13.77 }, DIA_DIEM.nhaTrang,
-    { lon: 108.99, lat: 11.57 }, { lon: 108.10, lat: 10.93 },
-    DIA_DIEM.saiGon, { lon: 105.79, lat: 10.05 }, DIA_DIEM.caMau];
-  const points = venDuong.map(d => toaBanDo(d).map(v => v.toFixed(1)).join(",")).join(" ");
-  let svg = `<polyline points="${points}" fill="none" stroke="#FFF5D6" stroke-width="8" stroke-opacity=".75" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="12 10"/>`;
-  ds.forEach((d, i) => {
-    const [x, y] = toaBanDo(d), xong = i < qua() || (i === N && TT.dat), mo = i === qua() && i < N || i === N && qua() >= N;
-    const mau = xong ? "#25D397" : mo ? "#FFD166" : "#9FB0C3";
-    svg += `<circle cx="${x}" cy="${y}" r="${i === N ? 16 : 14}" fill="#09233D" stroke="${mau}" stroke-width="5"/>`;
-    svg += `<text x="${x + 21}" y="${y + 7}" fill="#FFFFFF" stroke="#12314E" stroke-width="4" paint-order="stroke" font-family="Arial,sans-serif" font-size="22" font-weight="700">${d.ten}</text>`;
-    if (i < N) svg += `<text x="${x}" y="${y + 6}" fill="#FFFFFF" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-weight="700">${i + 1}</text>`;
-    else svg += `<text x="${x}" y="${y + 7}" fill="#FFFFFF" text-anchor="middle" font-family="Arial,sans-serif" font-size="20">★</text>`;
-  });
-  banDoTuyen.innerHTML = svg;
-  banDoDanhSach.innerHTML = "";
-  TRAM.forEach((t, i) => banDoDanhSach.appendChild(h("button", {
-    class: i < qua() ? "xong" : i === qua() ? "mo" : "",
-    text: `${i + 1}. ${HANH_TRINH[i].ten} · ${B.chang[i].ten_ngan || B.chang[i].ten}${i < qua() ? " ✓" : ""}`,
-    ...(i > qua() ? { disabled: "" } : {}),
-    onclick: () => { moBanDo(false); dichChuyen(t); }
-  })));
-  banDoDanhSach.appendChild(h("button", { class: qua() >= N ? "mo" : "", text: "★ Cà Mau · Checkpoint cuối",
-    ...(qua() < N ? { disabled: "" } : {}), onclick: () => { moBanDo(false); dichChuyen(CONG); } }));
-}
 
 const goiY = h("div", { class: "q-the q-goi-y", role: "status", "aria-live": "polite" });
 document.body.appendChild(goiY);
@@ -642,11 +676,10 @@ function capNhatTrangThai(vuaDoi) {
     if (CONG.nhan.material.map) CONG.nhan.material.map.dispose();
     CONG.nhan.material.map = nhanCong(ttc); CONG.nhan.material.needsUpdate = true;
     CONG.mo_muc_tieu = ttc === "khoa" ? 0 : 1;
-    if (vuaDoi && cu === "khoa" && ttc === "mo") { SFX.cong(); phaoHoa(new THREE.Vector3(DIA_DIEM.caMau.x, 7, DIA_DIEM.caMau.z), "#FBBF24"); }
-    if (vuaDoi && ttc === "xong") { for (let k = 0; k < 3; k++) setTimeout(() => phaoHoa(new THREE.Vector3(DIA_DIEM.caMau.x + (k - 1) * 4, 8 + k, DIA_DIEM.caMau.z), ["#FBBF24", "#38BDF8", "#F472B6"][k]), k * 350); }
+    if (vuaDoi && cu === "khoa" && ttc === "mo") { SFX.cong(); phaoHoa(new THREE.Vector3(0, 7, -19), "#FBBF24"); }
+    if (vuaDoi && ttc === "xong") { for (let k = 0; k < 3; k++) setTimeout(() => phaoHoa(new THREE.Vector3((k - 1) * 4, 8 + k, -19), ["#FBBF24", "#38BDF8", "#F472B6"][k]), k * 350); }
   }
   veKhoaHUD();
-  veBanDo();
 }
 function docLaiTienDo(tuKhung) {
   const cu = { qua: qua(), dat: !!TT.dat };
@@ -757,11 +790,10 @@ const canEl = h("div", { class: "q-can" }, [h("i")]);
 document.body.appendChild(canEl);
 if (CAM_UNG) document.body.appendChild(h("div", { class: "q-can-goi-y", text: "Kéo ở đây để đi" }));
 const camXaMacDinh = () => innerWidth / innerHeight < 0.8 ? 17 : 13;   // màn hình dọc (iPad dọc, điện thoại): lùi xa hơn
-let camYaw = Math.PI, camXa = camXaMacDinh(), dich = null;
+let camYaw = 0, camXa = camXaMacDinh(), dich = null;
 
 addEventListener("keydown", (e) => {
   if (khungMo) { if (e.key === "Escape") dongKhung(); return; }
-  if (!banDo.hidden) { if (e.key === "Escape") moBanDo(false); return; }
   if (manDau && !manDau.classList.contains("an")) return;
   const k = e.key.toLowerCase();
   if (["arrowup", "arrowdown", "arrowleft", "arrowright", " "].includes(k)) e.preventDefault();
@@ -984,12 +1016,9 @@ let dangChoi = false;
 const manDau = h("div", { class: "q-man" });
 const nutVao = h("button", { class: "q-vao", text: "Đang tải…", disabled: "" });
 manDau.appendChild(h("div", { class: "q-the" }, [
-  h("div", { class: "q-nho", text: B.khoa + " · " + B.nhan }),
+  h("div", { class: "q-nho", text: "ĐẢO " + String(B.bai).padStart(2, "0") + " · " + B.khoa + " · " + B.nhan }),
   h("h1", { text: CFG.ten_dao }),
   h("p", { class: "q-cau", text: B.cau_hoi }),
-  h("button", { class: "q-ban-do-xem", "aria-label": "Xem bản đồ hành trình Hà Giang đến Cà Mau", onclick: () => moBanDo(true) }, [
-    h("img", { src: "../assets/vietnam-map.svg", alt: "Lược đồ Việt Nam có Hoàng Sa và Trường Sa" }),
-    h("span", { text: "Xem bản đồ: Hà Giang → Cà Mau · Hoàng Sa · Trường Sa ↗" })]),
   h("ul", {}, [
     h("li", { text: "Mỗi trạm là một chặng của bài học (" + N + " trạm). Qua câu hỏi nhanh của trạm thì trạm sau mở khoá." }),
     h("li", { text: "Qua đủ " + N + " trạm, Cổng checkpoint cuối mở — đạt " + B.cuoi.dat + "/" + B.cuoi.so_cau + " câu nhận chứng chỉ như trang bài học thường." }),

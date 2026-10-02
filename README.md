@@ -10,13 +10,12 @@ checkpoint cuối, ảnh chứng chỉ và nút **Tải chứng chỉ (PNG)** hi
 
 | Đường dẫn | Nội dung |
 |---|---|
-| `index.html` | Trang chủ — danh sách bài (đọc `assets/khoa.js`) |
+| `index.html`, `assets/home3d.js`, `assets/home.css` | Trang chủ quần đảo 3D và danh sách sáu bài; vẫn dùng được danh sách khi 3D không tải |
 | `baiNN/index.html` + `baiNN/data.js` | Một bài học. `data.js` sinh bằng `_Scripts/build_web.py` của bài đó |
 | `baiNN/quest.html` | Cổng vào game 3D của mỗi bài; từng trạm mở đúng một chặng |
 | `baiNN/img/` | Hình minh họa của bài |
 | `assets/app.js`, `assets/style.css` | Bộ chạy và giao diện dùng chung |
 | `assets/quest3d.js`, `assets/quest3d.css` | Bộ chạy và giao diện 3D dùng chung |
-| `assets/vietnam-map.svg` | Lược đồ hành trình Việt Nam trong game, có Hoàng Sa và Trường Sa |
 | `assets/scratch/bai01.png` … `bai05.png` | Hình khối lệnh Scratch 3 bằng tiếng Việt, dùng trong chặng phù hợp |
 | `_Chung/build_quest.py` | Màu, tên, ký hiệu và cảnh riêng của sáu bài; chạy để dựng lại `quest.html` |
 | `kiem-tra.html` | Giáo viên dán danh sách `Họ tên ; Lớp ; Mã` để đối chiếu mã chứng chỉ |
@@ -27,8 +26,8 @@ checkpoint cuối, ảnh chứng chỉ và nút **Tải chứng chỉ (PNG)** hi
 - Video nhúng là **xem thêm**, không cộng vào thời gian làm việc chính: Bài 1 [Code.org – Input/Output](https://www.youtube.com/watch?v=DKGZlaPlVLY), Bài 2 [Harvard CS50 – Operators](https://www.youtube.com/watch?v=f1xZf4iJDWE), Bài 3 [Code.org – If Statements](https://www.youtube.com/watch?v=KpMTXwlU270), Bài 4 [Code.org – For Loops](https://www.youtube.com/watch?v=EF3laugNVCI), Bài 5 [Code.org – Functions with Parameters](https://www.youtube.com/watch?v=e9qjXKaeDHg). Video tiếng Anh có chú thích tiếng Việt về phần cần quan sát. Bài 6 là ôn tập, kiểm tra nên không thêm video mới.
 - Hình khối Scratch 3 được dựng bằng [scratchblocks](https://github.com/scratchblocks/scratchblocks) từ tên khối trong bản dịch tiếng Việt, dựa trên [thiết kế Scratch Blocks](https://github.com/scratchfoundation/scratch-blocks). Đây là hình minh họa đúng dạng và màu khối, không phải ảnh chụp giao diện Scratch. Bài 3 hiển thị nhãn “nếu không” trên nhánh `else` để học sinh đọc dễ hơn. Trên web có chú thích nguồn ngay dưới hình.
 - Slide dạy theo từng trạm của Bài 1–5 nằm ngay trong thư mục từng bài, tên kết thúc `_DayTheoTram.pptx`. Sau mỗi checkpoint có slide hỏi đáp và ghi bài. Các slide này được ghép vào PPTX gốc để giữ nguyên hiệu ứng và dữ liệu ClassPoint. Bài 6 là giờ ôn tập và kiểm tra, nên giáo viên dùng game ôn tập trước giờ kiểm tra hoặc ở nhà; slide kiểm tra hiện có giữ nguyên.
-- Game đi bằng WASD hoặc phím mũi tên; E/Enter để vào trạm. Mỗi bài đi theo hành trình từ Hà Giang qua các điểm dừng phía nam đến cổng checkpoint ở Cà Mau. Nút **Bản đồ** cho học sinh xem tuyến, điểm đã qua, điểm đang mở và hai quần đảo Hoàng Sa, Trường Sa. Từ bản đồ hoặc menu chỉ được dịch chuyển tới trạm đã mở. Máy cảm ứng có cần điều khiển. `index.html` là đường học dự phòng khi WebGL hoặc thư viện 3D không tải được. Hai chế độ dùng chung tên, lớp, tiến độ và chứng chỉ trên cùng trình duyệt.
-- Lược đồ là hình minh họa cho hành trình học tập, không dùng xác định ranh giới biển. Đường bờ lấy từ [Natural Earth 1:50m](https://github.com/nvkelso/natural-earth-vector), dữ liệu [public domain](https://www.naturalearthdata.com/about/terms-of-use/). Vị trí ký hiệu nhóm đảo tham khảo thông tin về [Hoàng Sa](https://danang.gov.vn/vi/web/dng/w/ubnd-huyen-hoang-sa-i) và [Trường Sa](https://pbgdpl.gov.vn/Pages/chi-tiet-tin.aspx?ItemID=1113&l=Nghiencuutraodoi) từ nguồn cơ quan nhà nước. Tệp nguồn `_Chung/build_vietnam_map.py` dựng lại SVG, còn tên và màu cảnh từng bài do `_Chung/build_quest.py` quy định.
+- Game đi bằng WASD hoặc phím mũi tên; E/Enter để vào trạm. Menu dịch chuyển tới trạm đã mở. Máy cảm ứng có cần điều khiển. `index.html` là đường học dự phòng khi WebGL hoặc thư viện 3D không tải được. Hai chế độ dùng chung tên, lớp, tiến độ và chứng chỉ trên cùng trình duyệt.
+- Trang chủ có sáu đảo 3D để chọn bài. Màn vào từng game đặt hướng dẫn bên trái để học sinh nhìn thấy cảnh đảo phía sau. Sáu bài có cảnh nhận diện riêng: rừng lệnh (1), xưởng phép toán (2), mê cung điều kiện (3), thành phố vòng lặp (4), phòng thí nghiệm hàm (5), pháo đài ôn tập (6). Học sinh có thể chọn bằng nút trên cảnh hoặc thẻ bài bên dưới; tiến độ ở thẻ lấy từ `localStorage` hiện có. Không gắn bản đồ địa lý vào game.
 
 ## GitHub Pages
 
