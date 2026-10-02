@@ -51,7 +51,7 @@ function glow(group, color, x, y, z, r) {
     { emissive:color, emissiveIntensity:.75, roughness:.24 });
 }
 
-const islands = [], pickers = [];
+const islands = [], pickers = [], movingParts = [];
 function makeIsland(index) {
   const t = themes[index], group = new THREE.Group();
   const [px,pz] = positions[index]; group.position.set(px,0,pz); scene.add(group);
@@ -61,6 +61,20 @@ function makeIsland(index) {
   const top = mesh(group, new THREE.CylinderGeometry(5.4,5.55,.32,sides), t.land, 0,.05,0);
   coast.receiveShadow = top.receiveShadow = true;
   top.userData.island = index; cliff.userData.island = index; pickers.push(top,cliff);
+  top.material.emissive = new THREE.Color(t.color);
+  top.material.emissiveIntensity = .015;
+  coast.material.emissive = new THREE.Color(t.color);
+  coast.material.emissiveIntensity = .02;
+  const halo = mesh(group,new THREE.TorusGeometry(6.25,.13,8,48),t.color,0,-.38,0,
+    {transparent:true,opacity:.07,emissive:t.color,emissiveIntensity:.9,depthWrite:false});
+  halo.rotation.x=Math.PI/2;
+  const light=new THREE.PointLight(t.color,0,18); light.position.set(0,3,0); group.add(light);
+  const sparks=[];
+  for(let k=0;k<7;k++) {
+    const spark=mesh(group,new THREE.OctahedronGeometry(.13,0),t.color,0,0,0,
+      {transparent:true,opacity:0,emissive:t.color,emissiveIntensity:1,depthWrite:false});
+    sparks.push(spark);
+  }
   const dark = ["#245E48","#2A4D61","#594D80","#214664","#454773","#6B6555"][index];
 
   if (index === 0) {
@@ -72,7 +86,8 @@ function makeIsland(index) {
     }
     block(group,dark,-1.1,1.35,-.2,.5,2.7,.6);
     block(group,dark,1.1,1.35,-.2,.5,2.7,.6);
-    block(group,t.color,0,2.9,-.2,2.8,.42,.7,{emissive:t.color,emissiveIntensity:.3});
+    const gate=block(group,t.color,0,2.9,-.2,2.8,.42,.7,{emissive:t.color,emissiveIntensity:.3});
+    movingParts.push({object:gate,kind:"pulse",phase:index});
   } else if (index === 1) {
     // Xưởng toán: tháp và bánh răng.
     for (const x of [-2.6,2.6]) {
@@ -80,17 +95,20 @@ function makeIsland(index) {
       mesh(group,new THREE.CylinderGeometry(.35,.45,2.2,8),"#44677B",x,3.2,0);
       glow(group,t.color,x,4.5,0,.42);
     }
-    const gear = mesh(group,new THREE.TorusGeometry(1.65,.32,8,14),t.color,0,2.1,1.4,{metalness:.5,roughness:.3});
+    const rotor=new THREE.Group(); rotor.position.set(0,2.1,1.4); group.add(rotor);
+    const gear = mesh(rotor,new THREE.TorusGeometry(1.65,.32,8,14),t.color,0,0,0,{metalness:.5,roughness:.3});
     gear.rotation.y=.28;
-    block(group,"#E8F5F2",0,2.1,1.4,3,.25,.35);
-    block(group,"#E8F5F2",0,2.1,1.4,.25,3,.35);
+    block(rotor,"#E8F5F2",0,0,0,3,.25,.35);
+    block(rotor,"#E8F5F2",0,0,0,.25,3,.35);
+    movingParts.push({object:rotor,kind:"spinZ"});
   } else if (index === 2) {
     // Mê cung điều kiện: lối rẽ và khối lựa chọn.
     for (const [x,z,w,d] of [[-2.8,-1,.6,5],[2.8,1,.6,5],[-1.1,-2.7,3.8,.6],[1.1,2.7,3.8,.6]]) {
       block(group,dark,x,1.25,z,w,2.5,d);
       block(group,t.color,x,2.58,z,w+.08,.12,d+.08,{emissive:t.color,emissiveIntensity:.5});
     }
-    glow(group,t.color,0,3.2,0,1.05);
+    const choice=glow(group,t.color,0,3.2,0,1.05);
+    movingParts.push({object:choice,kind:"choice"});
   } else if (index === 3) {
     // Thành phố vòng lặp: nhà cao tầng và vòng quay trên không.
     for (const [x,z,h] of [[-2.7,-1.6,3.8],[2.6,-2,4.8],[-2.6,2,2.8],[2.7,2,3.5]]) {
@@ -99,6 +117,7 @@ function makeIsland(index) {
     }
     const ring=mesh(group,new THREE.TorusGeometry(2.2,.16,8,32),t.color,0,5.1,0,{emissive:t.color,emissiveIntensity:.6});
     ring.rotation.x=Math.PI/2;
+    movingParts.push({object:ring,kind:"spinY"});
   } else if (index === 4) {
     // Phòng lab: mô-đun kính và lõi sáng.
     for (const x of [-2.7,2.7]) {
@@ -110,31 +129,37 @@ function makeIsland(index) {
     block(group,t.color,0,.22,0,3.5,.13,.15,{emissive:t.color,emissiveIntensity:.9});
     const halo=mesh(group,new THREE.TorusGeometry(1.55,.1,8,28),t.color,0,3.9,0,{emissive:t.color,emissiveIntensity:.65});
     halo.rotation.x=.45;
+    movingParts.push({object:halo,kind:"lab"});
   } else {
     // Pháo đài ôn tập: hai tháp đá, thành lũy và cờ.
     for (const x of [-2.8,2.8]) {
       mesh(group,new THREE.CylinderGeometry(1.05,1.18,3.4,8),dark,x,1.8,-.6);
       mesh(group,new THREE.ConeGeometry(1.35,1.5,8),"#A15F48",x,4.2,-.6);
       block(group,"#EBE3CA",x,5.4,-.6,.12,1.2,.12);
-      block(group,t.color,x+.4,5.65,-.6,.8,.42,.06,{emissive:t.color,emissiveIntensity:.2});
+      const flag=block(group,t.color,x+.4,5.65,-.6,.8,.42,.06,{emissive:t.color,emissiveIntensity:.2});
+      movingParts.push({object:flag,kind:"flag",phase:x});
     }
     block(group,dark,0,1.7,-2,5.5,3.4,1.2);
     for(let x=-2.3;x<=2.3;x+=1.15) block(group,"#918978",x,3.65,-2,.65,.6,1.3);
   }
-  islands.push({ group, top, index, baseY:0, x:px, z:pz });
+  islands.push({ group, top, coast, halo, light, sparks, index, scale:1, glow:0, x:px, z:pz });
 }
 for(let i=0;i<6;i++) makeIsland(i);
 
-const sea = mesh(scene,new THREE.PlaneGeometry(160,120,1,1),"#0E4D6A",0,-3.7,0,{metalness:.16,roughness:.43});
-sea.rotation.x=-Math.PI/2;
+const seaGeometry=new THREE.PlaneGeometry(160,120,32,24);
+seaGeometry.rotateX(-Math.PI/2);
+const sea=mesh(scene,seaGeometry,"#0E4D6A",0,-3.7,0,{metalness:.16,roughness:.43,flatShading:false});
+const seaBase=seaGeometry.attributes.position.array.slice();
 const grid = new THREE.GridHelper(120,24,"#2D89A0","#17617D");
 grid.position.y=-3.62; grid.material.opacity=.23; grid.material.transparent=true; scene.add(grid);
 
 // Đường sáng mảnh nối sáu đảo theo thứ tự học.
-const routeMesh = new THREE.Mesh(new THREE.TubeGeometry(
-  new THREE.CatmullRomCurve3(positions.map(([x,z])=>new THREE.Vector3(x,-1.5,z))),100,.045,5,false),
+let routeCurve=new THREE.CatmullRomCurve3(positions.map(([x,z])=>new THREE.Vector3(x,-1.5,z)));
+const routeMesh = new THREE.Mesh(new THREE.TubeGeometry(routeCurve,100,.045,5,false),
   new THREE.MeshBasicMaterial({color:"#A8EBE6",transparent:true,opacity:.6}));
 scene.add(routeMesh);
+const routePulse=mesh(scene,new THREE.SphereGeometry(.28,10,8),"#D7FFEE",0,-1.5,0,
+  {emissive:"#82FFF0",emissiveIntensity:1.1,roughness:.15});
 
 const labels = bai.map((b,i)=>{
   const a=document.createElement("a");
@@ -144,10 +169,26 @@ const labels = bai.map((b,i)=>{
   const small=document.createElement("small"); small.textContent="ĐẢO "+String(i+1).padStart(2,"0");
   const strong=document.createElement("strong"); strong.textContent=themes[i].ten;
   a.append(small,strong); hotspots.appendChild(a);
-  a.addEventListener("mouseenter",()=>{ islands[i].group.scale.setScalar(1.08); });
-  a.addEventListener("mouseleave",()=>{ islands[i].group.scale.setScalar(1); });
+  a.addEventListener("pointerenter",()=>setActive(i));
+  a.addEventListener("pointerleave",()=>setActive(-1));
+  a.addEventListener("focus",()=>setActive(i));
+  a.addEventListener("blur",()=>setActive(-1));
   return a;
 });
+const cards=[...document.querySelectorAll(".lesson-card")];
+cards.forEach((card,i)=>{
+  card.addEventListener("pointerenter",()=>setActive(i));
+  card.addEventListener("pointerleave",()=>setActive(-1));
+  card.addEventListener("focus",()=>setActive(i));
+  card.addEventListener("blur",()=>setActive(-1));
+});
+let activeIndex=-1;
+function setActive(index) {
+  if(activeIndex===index) return;
+  activeIndex=index;
+  labels.forEach((label,i)=>label.classList.toggle("is-active",i===index));
+  cards.forEach((card,i)=>card.classList.toggle("is-active",i===index));
+}
 
 function size() {
   const w=box.clientWidth,h=box.clientHeight;
@@ -160,8 +201,8 @@ function size() {
       it.group.position.x=it.x; it.group.position.z=it.z;
     });
     routeMesh.geometry.dispose();
-    routeMesh.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(
-      positions.map(([x,z])=>new THREE.Vector3(x,-1.5,z))),100,.045,5,false);
+    routeCurve=new THREE.CatmullRomCurve3(positions.map(([x,z])=>new THREE.Vector3(x,-1.5,z)));
+    routeMesh.geometry=new THREE.TubeGeometry(routeCurve,100,.045,5,false);
   }
   renderer.setSize(w,h,false);
   camera.aspect=w/h;
@@ -184,7 +225,12 @@ function picked(e) {
   ray.setFromCamera(pointer,camera);
   return ray.intersectObjects(pickers,false)[0]?.object.userData.island;
 }
-canvas.addEventListener("pointermove",e=>{ canvas.style.cursor=picked(e)===undefined?"default":"pointer"; });
+canvas.addEventListener("pointermove",e=>{
+  const i=picked(e);
+  canvas.style.cursor=i===undefined?"default":"pointer";
+  setActive(i===undefined?-1:i);
+});
+canvas.addEventListener("pointerleave",()=>setActive(-1));
 canvas.addEventListener("click",e=>{ const i=picked(e); if(i!==undefined) location.href=bai[i].ma+"/quest.html"; });
 addEventListener("resize",size);
 size();
@@ -192,10 +238,46 @@ let frame=0;
 function animate(time) {
   requestAnimationFrame(animate);
   if(document.hidden) return;
+  const phase=reduced?0:time;
+  islands.forEach((it,i)=>{
+    const selected=i===activeIndex;
+    const ease=reduced?1:.13;
+    it.scale+=( (selected?1.23:1)-it.scale )*ease;
+    it.glow+=( (selected?1:0)-it.glow )*ease;
+    it.group.scale.setScalar(it.scale);
+    it.group.position.y=(reduced?0:Math.sin(phase*.0011+i*.95)*.23)+it.glow*.7;
+    it.group.rotation.y=reduced?0:Math.sin(phase*.00055+i)*.075;
+    it.top.material.emissiveIntensity=.015+it.glow*.52;
+    it.coast.material.emissiveIntensity=.02+it.glow*.85;
+    it.halo.material.opacity=.07+it.glow*(reduced?.62:.52+.1*Math.sin(phase*.007));
+    it.light.intensity=it.glow*2.4;
+    it.sparks.forEach((spark,k)=>{
+      const a=k*Math.PI*2/it.sparks.length+(reduced?0:phase*.00055);
+      spark.position.set(Math.cos(a)*6.6,.8+(reduced?0:Math.sin(phase*.003+k)*.42),Math.sin(a)*6.6);
+      spark.material.opacity=it.glow*(reduced?.8:.55+.35*Math.sin(phase*.006+k)**2);
+    });
+  });
   if(!reduced) {
-    islands.forEach((it,i)=>{ it.group.position.y=Math.sin(time*.00055+i*.75)*.12; it.group.rotation.y=Math.sin(time*.00018+i)*.025; });
-    if(frame++%3===0) placeLabels();
+    movingParts.forEach(({object,kind,phase:offset=0})=>{
+      if(kind==="spinZ") object.rotation.z=phase*.00055;
+      else if(kind==="spinY") object.rotation.y=phase*.00065;
+      else if(kind==="lab") { object.rotation.y=phase*.0007; object.rotation.z=Math.sin(phase*.001)*.25; }
+      else if(kind==="choice") { object.rotation.y=phase*.0007; object.position.y=3.2+Math.sin(phase*.002)*.3; }
+      else if(kind==="flag") object.rotation.y=Math.sin(phase*.004+offset)*.35;
+      else if(kind==="pulse") object.material.emissiveIntensity=.35+.3*Math.sin(phase*.003);
+    });
+    const p=seaGeometry.attributes.position;
+    if(frame%2===0) {
+      for(let j=0;j<p.array.length;j+=3)
+        p.array[j+1]=seaBase[j+1]+.16*Math.sin(phase*.0018+seaBase[j]*.12+seaBase[j+2]*.09);
+      p.needsUpdate=true; seaGeometry.computeVertexNormals();
+    }
+    routePulse.position.copy(routeCurve.getPoint((phase*.00007)%1));
+    routePulse.scale.setScalar(.85+.2*Math.sin(phase*.007));
+  } else {
+    routePulse.visible=false;
   }
+  if(frame++%3===0 || reduced) placeLabels();
   renderer.render(scene,camera);
 }
 requestAnimationFrame(animate);
