@@ -1,59 +1,59 @@
-# Lập trình C++ khối 8 — Bài học trên web
+# C++ lớp 8 — sáu bài học trên web
 
-Trang tĩnh dành cho **học sinh lớp 8**. Mỗi bài có thế giới đi cảnh 3D và trang đọc cùng nội dung.
-Học sinh qua từng chặng, dừng để trao đổi và ghi bài, rồi mới làm chặng tiếp theo. Checkpoint cuối
-đạt 8/10 câu thì tải chứng chỉ PNG để nộp lên Canvas.
-Khi bắt đầu, học sinh chọn lớp từ danh sách cố định **8A1–8A10**; không gõ lớp tự do. Sau khi đạt
-checkpoint cuối, ảnh chứng chỉ và nút **Tải chứng chỉ (PNG)** hiện ngay; khi mở lại bài, nút vẫn có.
+Trang học: https://vuongndlst.github.io/cpp-8/
 
-## Cấu trúc
+## Mạch một tiết 60–70 phút
 
-| Đường dẫn | Nội dung |
-|---|---|
-| `index.html`, `assets/home3d.js`, `assets/home.css` | Trang chủ quần đảo 3D và danh sách sáu bài; vẫn dùng được danh sách khi 3D không tải |
-| `baiNN/index.html` + `baiNN/data.js` | Một bài học. `data.js` sinh bằng `_Scripts/build_web.py` của bài đó |
-| `baiNN/quest.html` | Cổng vào game 3D của mỗi bài; từng trạm mở đúng một chặng |
-| `baiNN/img/` | Hình minh họa của bài |
-| `assets/app.js`, `assets/style.css` | Bộ chạy và giao diện dùng chung |
-| `assets/quest3d.js`, `assets/quest3d.css` | Bộ chạy và giao diện 3D dùng chung |
-| `assets/scratch/bai01.png` … `bai05.png` | Hình khối lệnh Scratch 3 bằng tiếng Việt, dùng trong chặng phù hợp |
-| `_Chung/build_quest.py` | Màu, tên, ký hiệu và cảnh riêng của sáu bài; chạy để dựng lại `quest.html` |
-| `kiem-tra.html` | Giáo viên dán danh sách `Họ tên ; Lớp ; Mã` để đối chiếu mã chứng chỉ |
+1. Giáo viên mở một tình huống vui, cho học sinh dự đoán và nối với Scratch.
+2. Học sinh vào web game **cá nhân**. Mỗi trạm có phần đọc ngắn, câu hỏi, một thao tác chơi và một thử thách C++ tự viết. Giáo viên cho dừng sau từng trạm để hỏi đáp và chốt kiến thức; học sinh ghi bài vào vở. Trạm cuối là thử thách cá nhân và chứng chỉ PDF.
+3. Giáo viên cùng lớp làm mẫu một bài qua Input, Output, mã giả, C++, rồi thử đầu vào khác.
+4. Nhóm 1–3 học sinh làm nhiệm vụ **khác bài cá nhân** ở `baiNN/thu-thach.html`, kiểm tra chương trình và xuất **một PDF** để nộp Canvas. Nhóm trình bày, lớp phản hồi.
+5. Học sinh trả lời một câu thoát học cá nhân; Kahoot năm câu dùng để chốt bài.
 
-## Cách dạy theo chặng
+Slide, hướng dẫn giáo viên, Canvas và Kahoot nằm trong thư mục từng bài của khóa C++ lớp 8. Slide giữ hình thức của Bài 1 và có điểm dừng, câu hỏi, phần ghi bài, ví dụ code, bài mẫu chung và đáp án. Đừng giao tất cả các trạm web cùng lúc.
 
-- Bài 1–5: ba trạm kiến thức và một trạm thử thách cặp đôi. Bài 6: năm trạm ôn tập. Giáo viên giao **một trạm mỗi lần**; sau checkpoint, màn hình dừng để học sinh giải thích điều vừa làm, giáo viên chốt và học sinh ghi bài. Chỉ khi giáo viên cho phép mới bấm đi tiếp.
-- Video nhúng là **xem thêm**, không cộng vào thời gian làm việc chính: Bài 1 [Code.org – Input/Output](https://www.youtube.com/watch?v=DKGZlaPlVLY), Bài 2 [Harvard CS50 – Operators](https://www.youtube.com/watch?v=f1xZf4iJDWE), Bài 3 [Code.org – If Statements](https://www.youtube.com/watch?v=KpMTXwlU270), Bài 4 [Code.org – For Loops](https://www.youtube.com/watch?v=EF3laugNVCI), Bài 5 [Code.org – Functions with Parameters](https://www.youtube.com/watch?v=e9qjXKaeDHg). Video tiếng Anh có chú thích tiếng Việt về phần cần quan sát. Bài 6 là ôn tập, kiểm tra nên không thêm video mới.
-- Hình khối Scratch 3 được dựng bằng [scratchblocks](https://github.com/scratchblocks/scratchblocks) từ tên khối trong bản dịch tiếng Việt, dựa trên [thiết kế Scratch Blocks](https://github.com/scratchfoundation/scratch-blocks). Đây là hình minh họa đúng dạng và màu khối, không phải ảnh chụp giao diện Scratch. Bài 3 hiển thị nhãn “nếu không” trên nhánh `else` để học sinh đọc dễ hơn. Trên web có chú thích nguồn ngay dưới hình.
-- Slide dạy theo từng trạm của Bài 1–5 nằm ngay trong thư mục từng bài, tên kết thúc `_DayTheoTram.pptx`. Sau mỗi checkpoint có slide hỏi đáp và ghi bài. Các slide này được ghép vào PPTX gốc để giữ nguyên hiệu ứng và dữ liệu ClassPoint. Bài 6 là giờ ôn tập và kiểm tra, nên giáo viên dùng game ôn tập trước giờ kiểm tra hoặc ở nhà; slide kiểm tra hiện có giữ nguyên.
-- Game đi bằng WASD hoặc phím mũi tên; E/Enter để vào trạm. Menu dịch chuyển tới trạm đã mở. Máy cảm ứng có cần điều khiển. `index.html` là đường học dự phòng khi WebGL hoặc thư viện 3D không tải được. Hai chế độ dùng chung tên, lớp, tiến độ và chứng chỉ trên cùng trình duyệt.
-- Trang chủ có sáu đảo 3D để chọn bài. Màn vào từng game đặt hướng dẫn bên trái để học sinh nhìn thấy cảnh đảo phía sau. Sáu bài có cảnh nhận diện riêng: rừng lệnh (1), xưởng phép toán (2), mê cung điều kiện (3), thành phố vòng lặp (4), phòng thí nghiệm hàm (5), pháo đài ôn tập (6). Đảo nổi nhẹ, chi tiết riêng chuyển động, mặt biển gợn và điểm sáng chạy theo lộ trình. Rê chuột hoặc chuyển tiêu điểm bằng bàn phím vào đảo hay thẻ bài sẽ làm cả hai cùng sáng và phóng lớn; chế độ giảm chuyển động của hệ điều hành được tôn trọng. Học sinh có thể chọn bằng nút trên cảnh hoặc thẻ bài bên dưới; tiến độ ở thẻ lấy từ `localStorage` hiện có. Không gắn bản đồ địa lý vào game.
+## Phạm vi từng bài
 
-## GitHub Pages
+| Bài | Nội dung chính | Game cá nhân | Bài nhóm |
+|---|---|---|---|
+| 1 | Cấu trúc chương trình, `cout`, `;`, xuống dòng, chú thích | Robot qua vật cản | Viết chương trình in nhiều dòng vui |
+| 2 | Biến `int`, `cin`, phép toán số nguyên | Xưởng băng chuyền: bắt thùng đúng làn | Quầy vé hội chợ |
+| 3 | So sánh, `if`, `else` | Cáo tìm đường trong mê cung | Cổng kiểm tra điểm |
+| 4 | Vòng lặp `for` đếm từ 1 | Drone canh nhịp qua quỹ đạo | Bảng nhân |
+| 5 | Hàm `void`, định nghĩa và gọi hàm | Robot lắp mô đun đúng thứ tự | In một hình bằng hàm |
+| 6 | Dự đoán, chạy thử, sửa lỗi, ôn tập | Pháo đài tìm lỗi | Kiểm thử chương trình |
 
-Kho mã: [vuongndlst/cpp-8](https://github.com/vuongndlst/cpp-8). Trang học: [vuongndlst.github.io/cpp-8](https://vuongndlst.github.io/cpp-8/). Thư mục `_Web/` này chính là gốc kho GitHub; cập nhật web trong thư mục này rồi đưa commit lên nhánh `main`. Không dùng đường dẫn `ml-level1` của khóa Machine Learning cho C++.
+Bài 1 đã xuất bản trước. Bài 2–6 dùng bộ trang và dữ liệu `v2`. Giáo viên có thể đổi tên, tình huống, câu hỏi trong `assets/v2-lessons.js`, rồi kiểm tra lại slide, Canvas và Kahoot tương ứng. Đối tượng là học sinh lớp 8, nên mỗi bài chỉ có một trọng tâm mới và ví dụ ngắn.
 
-## Chạy thử trên máy
+## Đường dẫn và cấu trúc
 
-```bash
-python -m http.server 8766 --directory _Web
+- `index.html`: trang chủ sáu đảo 3D; thẻ bài là đường vào thuận tiện.
+- `baiNN/index.html`: giới thiệu ngắn, mục tiêu, lối vào game cá nhân và thử thách nhóm.
+- `baiNN/game.html`: web game cá nhân; `quest.html` chuyển tới đây cho liên kết cũ.
+- `baiNN/thu-thach.html`: quy trình nhóm, biên dịch và chấm tự động, xuất báo cáo PDF.
+- `assets/v2-lessons.js`: nguồn nội dung và bộ kiểm tra Bài 2–6.
+- `assets/v2-game.js`: năm cơ chế chơi khác nhau. `assets/v2-group.js`: hoạt động nhóm.
+- `assets/v2-common.js`, `assets/v2-compiler-worker.js`, `assets/v2.css`: giao diện code, chạy C++ và phong cách chung.
+- `bai01/vendor/clang-wasm/`: trình biên dịch C++ chạy trong trình duyệt, dùng chung cho các bài. Lần đầu dùng cần tải bộ biên dịch; các lần sau trình duyệt có thể dùng bộ nhớ đệm.
+- `tools/`: script dựng trang, dữ liệu xuất, slide, Kahoot và tài liệu giáo viên. Chúng phục vụ bảo trì, không phải nội dung học sinh cần mở.
+
+Tên lớp cố định 8A1–8A10. Tên, lớp và tiến độ lưu trên trình duyệt của từng máy, không gửi lên máy chủ. Đổi máy hoặc xóa dữ liệu trình duyệt sẽ mất tiến độ. Chứng chỉ và báo cáo được tạo trên máy học sinh; giáo viên cần xem file PDF nộp trên Canvas khi đánh giá. Chấm code tự động so đầu ra của chương trình sau khi chạy nhiều bộ dữ liệu; đó là phản hồi luyện tập, không thay cho đánh giá cách giải thích của học sinh.
+
+## Dựng và kiểm tra
+
+Từ thư mục gốc của kho, mở máy chủ web tĩnh rồi vào `http://localhost:8766/`:
+
+```text
+python -m http.server 8766
 ```
 
-Mở `http://localhost:8766/bai04/quest.html`.
+Sau khi sửa `assets/v2-lessons.js`, chạy các script theo thứ tự: `tools/export_v2_lessons.mjs`, `tools/build_v2_pages.py`, `tools/build_v2_slides.py`, `tools/build_v2_docs.py`, `tools/build_v2_kahoot.mjs`. Các script tạo slide, Kahoot và tài liệu ở thư mục ngang cấp kho để không xuất bản tài liệu giáo viên lên web. Kiểm tra bằng trình duyệt từng cơ chế game, bài code và PDF; kiểm tra bố cục tất cả slide trước khi chuyển vào thư mục từng bài.
 
-## Lưu ý
+Game tải Three.js từ jsDelivr. Trình biên dịch dùng `clang-wasm` đi kèm kho. Một số máy trường có thể mất thời gian ở lượt biên dịch đầu; nên mở sẵn một game trước giờ học. Các nút và thẻ bài vẫn dùng được với bàn phím và máy cảm ứng. Cơ chế và khung cảnh lấy cảm hứng từ game học tập, không dùng mã hay hình của Interland.
 
-- Tiến độ lưu trong `localStorage` của trình duyệt — đổi máy thì học lại từ đầu.
-- Đáp án chỉ lưu dạng băm (cyrb53); mã chứng chỉ tính từ bài + họ tên + lớp. Web tĩnh nên người cố tình đọc mã nguồn vẫn dò được — đây là đánh giá quá trình, điểm chính thức ở quiz Canvas.
-- Game tải Three.js từ jsDelivr và video từ YouTube; cần mạng. Khi không chạy được 3D, mở trang dạng đọc.
-- Sửa nội dung: sửa `build_web.py` của bài rồi chạy lại; sửa chủ đề game trong `_Chung/build_quest.py` rồi chạy lại. Không sửa tay `data.js` hoặc `quest.html`.
-- Lỗi chứng chỉ đã sửa ngày 02/10/2026: biến lấy màu CSS không được trùng tên với canvas vẽ chứng chỉ trong `assets/app.js`. Đã thử Bài 2 đạt 10/10: ảnh PNG 1600 px và liên kết tải có tên tệp đúng.
-- Hình Scratch nằm trong `assets/scratch/`, được tạo từ thư viện `scratchblocks@3.7.1`. Nếu đổi ví dụ, dựng lại hình theo tên khối Scratch thật, kiểm tra màu và hình dạng khối, rồi cập nhật hình trên cả web và slide. Không thay bằng ô chữ giả khối Scratch.
-- Mã dựng slide và hình Scratch của đợt cập nhật nằm trong `.codex-pptx-build/` để AI agent sau có thể tái tạo. Khi chỉnh tiếp, tạo bản nháp riêng bằng `update_teaching_flow.mjs`, rồi dùng `merge_preserve.py` ghép slide mới vào file gốc. Không lấy bản nháp làm slide dạy vì công cụ xuất toàn bộ PPTX làm mất hiệu ứng ClassPoint. Đã kiểm tra PPTX cuối bằng bộ đọc PowerPoint, kiểm tra cấu trúc gói và bố cục đều không có lỗi; số slide có hiệu ứng và `customXml` bằng bản gốc. Chưa kiểm tra thao tác ClassPoint trực tiếp trong PowerPoint khi dạy.
-- Giữ nguyên ví dụ C++ đã chạy thật bằng g++ và quy tắc bài tập OnlineGDB; video chỉ giúp hiểu khái niệm, không thay ví dụ code của bài.
+## Nguồn tham khảo
 
-## Giao diện đầu bài và định hướng trò chơi
-
-- Trang chủ có ô chọn thẳng Bài 1–6; danh sách đọc từ `assets/khoa.js`. Bản đồ sáu đảo là đường khám phá theo chủ đề.
-- Màn đầu mỗi bài đưa câu hỏi dẫn nhập ngắn và ô tên/lớp lên trước. Lớp chỉ chọn từ 8A1–8A10; lỗi hiện bên cạnh ô tương ứng. Lời dẫn sáu bài nằm trong `assets/app.js` (`LOI_DAN`). Mục tiêu và lộ trình nằm trong phần mở rộng để học sinh đọc khi cần.
-- Hướng phát triển lấy cảm hứng từ [Interland của Google](https://beinternetawesome.withgoogle.com/en_us/interland/): mỗi đảo có một cách chơi ngắn gắn đúng thao tác C++, phản hồi tức thì, chơi lại được và dừng sau mỗi trạm để thảo luận. Rừng lệnh: xếp lệnh cho robot; Xưởng toán: điều khiển máy bằng biểu thức; Mê cung điều kiện: chọn `if` để mở cửa; Thành phố vòng lặp: lặp để hoàn thành tuyến đường; Phòng lab hàm: dùng lại hàm và thay tham số; Pháo đài ôn tập: tìm lỗi, thử và sửa. Học sinh vẫn phải viết, chạy và kiểm thử C++ thật trên OnlineGDB. Không sao chép hình ảnh, nhân vật hay mã nguồn Interland.
+- Cách chia chủ đề cú pháp, xuất dữ liệu và dòng mới: [W3Schools C++](https://www.w3schools.com/cpp/).
+- Cú pháp và hành vi C++: [bản thảo tiêu chuẩn C++](https://isocpp.org/files/papers/n4296.pdf).
+- Hình khối Scratch: [Scratch Blocks](https://github.com/scratchfoundation/scratch-blocks) và [scratchblocks](https://github.com/scratchblocks/scratchblocks).
+- Trình biên dịch chạy trong trình duyệt: [clang-wasm](https://github.com/live-codes/clang-wasm).

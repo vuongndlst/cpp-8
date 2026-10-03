@@ -26,7 +26,7 @@
     <div class="hero-copy">
       <p class="eyebrow"><span class="pulse"></span> SÁU ĐẢO · MỘT HÀNH TRÌNH C++</p>
       <h1 id="hero-title">Chọn một đảo.<br><em>Bắt đầu khám phá.</em></h1>
-      <p class="hero-lead">Mỗi đảo là một bài học. Con đi qua từng trạm, thử viết mã, trả lời câu hỏi rồi dừng để trao đổi và ghi bài cùng lớp.</p>
+      <p class="hero-lead">Mỗi đảo là một bài học với nhân vật và cách chơi riêng. Con học một ý ngắn, chơi, viết C++ thật rồi dừng để trao đổi và ghi bài cùng lớp.</p>
       <div class="hero-actions">
         <a class="primary" href="#chon-bai">Chọn bài học <span aria-hidden="true">↓</span></a>
         <a class="secondary" href="#quan-dao">Khám phá sáu đảo</a>
@@ -61,16 +61,16 @@
   <section class="how" id="cach-hoc" aria-labelledby="how-title">
     <div><p class="eyebrow">CÁCH HỌC</p><h2 id="how-title">Đi từng trạm, hiểu từng bước</h2></div>
     <ol>
-      <li><b>1</b><span>Chọn đảo và vào chặng đang mở.</span></li>
-      <li><b>2</b><span>Đoán trước, thử trên web và vượt câu hỏi nhanh.</span></li>
-      <li><b>3</b><span>Dừng lại trao đổi, ghi bài rồi mới đi tiếp.</span></li>
-      <li><b>4</b><span>Qua checkpoint cuối để tải chứng chỉ nộp Canvas.</span></li>
+      <li><b>1</b><span>Chọn đảo và vào game cá nhân.</span></li>
+      <li><b>2</b><span>Đọc kiến thức, chơi và chạy C++ để vượt từng trạm.</span></li>
+      <li><b>3</b><span>Tải phiếu PDF rồi dừng web để hỏi đáp, ghi bài.</span></li>
+      <li><b>4</b><span>Sau bài mẫu của giáo viên, làm thử thách nhóm và nộp một PDF.</span></li>
     </ol>
     <p class="save-note">Tiến độ lưu trên trình duyệt đang dùng. Hãy dùng cùng một máy trong buổi học.</p>
   </section>
 </main>
 
-<footer>Thiết kế cho học sinh C++ khối 8 · <a href="kiem-tra.html">Kiểm tra mã chứng chỉ (giáo viên)</a></footer>
+<footer>Thiết kế cho học sinh C++ khối 8 · Phiếu cá nhân và báo cáo nhóm là hai phần riêng.</footer>
 <script src="assets/khoa.js"></script>
 <script>
 (function () {
@@ -85,17 +85,17 @@
     location.href=b.ma+"/index.html";
   });
   var themes=[
-    ["Rừng lệnh","Bắt đầu với câu lệnh, nhập và xuất","#64D4A0"],
-    ["Xưởng toán","Dùng phép toán trong chương trình","#59DFDE"],
+    ["Đảo Lệnh Đầu Tiên","Cấu trúc chương trình và cout","#64D4A0"],
+    ["Xưởng tính toán","Biến, cin và phép tính với số nguyên","#59DFDE"],
     ["Mê cung điều kiện","Chọn hướng đi với if và else","#C5A2FF"],
-    ["Thành phố vòng lặp","Lặp lại công việc với for và while","#73D6EC"],
-    ["Phòng lab hàm","Tạo lệnh của riêng mình","#E3B3FA"],
-    ["Pháo đài ôn tập","Kết nối kiến thức Bài 1–5","#FBD581"]
+    ["Thành phố vòng lặp","Lặp một công việc với for","#73D6EC"],
+    ["Phòng thí nghiệm hàm","Đặt tên và dùng lại nhóm lệnh","#E3B3FA"],
+    ["Pháo đài kiểm thử","Dự đoán, chạy và sửa lỗi","#FBD581"]
   ];
   (window.KHOA||[]).forEach(function (b,i) {
     var progress={};
-    try { progress=JSON.parse(localStorage.getItem("cpp8_"+b.ma)||"{}"); } catch (e) {}
-    var state=progress.dat?"✓ Đã có chứng chỉ":progress.qua?"Đã qua "+progress.qua+" chặng":"Chưa bắt đầu";
+    try { progress=JSON.parse(localStorage.getItem(i===0?"cpp8_bai01_blender_slice_v3":"cpp8_v2_bai"+(i+1)+"_journey")||"{}"); } catch (e) {}
+    var state=progress.done||progress.finished?"✓ Đã hoàn thành":progress.stage?"Đã qua "+progress.stage+" trạm":progress.gate?"Đã qua "+progress.gate+" trạm":"Chưa bắt đầu";
     var a=document.createElement("a"); a.className="lesson-card"; a.href=b.ma+"/quest.html";
     a.style.setProperty("--accent",themes[i][2]);
     var top=document.createElement("div"); top.className="card-top";

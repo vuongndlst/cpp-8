@@ -7,12 +7,12 @@ const box = document.getElementById("sea-scene");
 const hotspots = document.getElementById("island-hotspots");
 const fallback = document.getElementById("sea-fallback");
 const themes = [
-  { ten: "Rừng lệnh", color: "#64D4A0", land: "#67B86B", edge: "#D3B77E", rock: "#7A725E" },
-  { ten: "Xưởng toán", color: "#59DFDE", land: "#71979F", edge: "#AFC5C8", rock: "#54646E" },
-  { ten: "Mê cung", color: "#C5A2FF", land: "#9A83B7", edge: "#CFB9DF", rock: "#675C7A" },
-  { ten: "Thành phố", color: "#73D6EC", land: "#6B9FB0", edge: "#ADD9DD", rock: "#536F82" },
-  { ten: "Phòng lab", color: "#E3B3FA", land: "#9D91BE", edge: "#CFC0DB", rock: "#5F6083" },
-  { ten: "Pháo đài", color: "#FBD581", land: "#A49F74", edge: "#E0C895", rock: "#69655B" },
+  { ten: "Đảo Lệnh", color: "#64D4A0", land: "#67B86B", edge: "#D3B77E", rock: "#7A725E" },
+  { ten: "Xưởng tính toán", color: "#59DFDE", land: "#71979F", edge: "#AFC5C8", rock: "#54646E" },
+  { ten: "Mê cung điều kiện", color: "#C5A2FF", land: "#9A83B7", edge: "#CFB9DF", rock: "#675C7A" },
+  { ten: "Thành phố vòng lặp", color: "#73D6EC", land: "#6B9FB0", edge: "#ADD9DD", rock: "#536F82" },
+  { ten: "Phòng lab hàm", color: "#E3B3FA", land: "#9D91BE", edge: "#CFC0DB", rock: "#5F6083" },
+  { ten: "Pháo đài kiểm thử", color: "#FBD581", land: "#A49F74", edge: "#E0C895", rock: "#69655B" },
 ];
 const desktopPositions = [[-16,-10],[0,-10],[16,-10],[-16,10],[0,10],[16,10]];
 const mobilePositions = [[-8,-18],[8,-18],[-8,0],[8,0],[-8,18],[8,18]];
