@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10243b">
+  <title>Đảo Lệnh Đầu Tiên · Học và chơi C++ lớp 8</title>
+  <link rel="stylesheet" href="slice.css">
+  <script type="importmap">
+  {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+  </script>
+</head>
+<body>
+  <main id="game" class="game">
+    <div id="world" class="world" aria-label="Màn chơi 3D điều khiển robot bằng phím trái, phải và Space"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <header class="hud">
+      <a class="back" href="index.html" aria-label="Về trang chủ">‹</a>
+      <div class="brand"><small>C++ LỚP 8 · BÀI 1</small><strong>ĐẢO LỆNH ĐẦU TIÊN</strong><span id="phaseName">Năm trạm kiến thức</span></div>
+      <div class="stat"><small>TRẠM</small><b id="pieceCount">0/5</b></div>
+      <div class="stat"><small>ĐIỂM</small><b id="score">000</b></div>
+      <div class="stat"><small>NĂNG LƯỢNG</small><b id="hearts">♥ ♥ ♥</b></div>
+      <button id="soundButton" class="icon" type="button" aria-label="Tắt âm thanh">♪</button>
+      <button id="pauseButton" class="icon" type="button" aria-label="Tạm dừng">Ⅱ</button>
+    </header>
+    <div class="progress"><div id="progressFill"></div></div>
+    <div id="bossHud" class="boss-hud" hidden><span>BUG GUARDIAN</span><div><i id="bossFill"></i></div></div>
+    <div id="mission" class="mission" role="status" aria-live="polite">Chờ robot khởi hành…</div>
+    <section id="choice" class="choice" hidden aria-live="polite">
+      <div class="choice-top"><small id="choiceStep">TRẠM 1/5</small><h2 id="choicePrompt"></h2></div>
+      <div id="choiceCards" class="choice-cards"></div>
+      <p>← → đổi làn · đưa robot vào mảnh đúng trước vạch sáng</p>
+    </section>
+    <div class="code-strip"><span>NHIỆM VỤ HIỆN TẠI</span><code id="codePreview">CHUẨN BỊ LÊN ĐƯỜNG</code></div>
+    <div id="overlay" class="overlay"><section id="panel" class="panel"></section></div>
+    <div class="controls" aria-label="Điều khiển">
+      <button data-control="left" type="button" aria-label="Sang trái">◀</button>
+      <button data-control="right" type="button" aria-label="Sang phải">▶</button>
+      <button data-control="jump" type="button" aria-label="Nhảy">NHẢY ▲</button>
+    </div>
+  </main>
+  <script src="vendor/pdf-lib.min.js"></script>
+  <script type="module" src="slice.js"></script>
+</body>
+</html>
